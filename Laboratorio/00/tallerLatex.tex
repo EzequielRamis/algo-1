@@ -1,0 +1,47 @@
+\documentclass[11pt]{article}
+
+\input{Algo1Macros.tex}
+\usepackage{caratula}
+
+\begin{document}
+%Caratula
+\titulo{Titulo}
+\subtitulo{subtitulo}
+\fecha{fecha}
+\materia{materia}
+\integrante{Fulanito, Cosme}{000/17}{fulanito.cosme@gmail.com}
+\integrante{Bond, James}{007/17}{bond.james@gmail.com}
+\maketitle
+%Creación de indice
+\tableofcontents
+\newpage
+
+El factorial de un entero positivo $n$ se define como:
+$n! = \prod_{i=1}^{n}i$
+
+El factorial de $5$ es: %
+$5! = \prod_{i=1}^{5}i=1\times2\times3\times4\times5=120$
+
+\section{Especificación}
+\begin{proc}{factorial}{\In n: \ent, \Out result: \ent}{}
+	\pre{n\geq0}
+	\post{(n=0\implica result=1)\wedge(n>0\implica result=\prod_{k=1}^nk)}
+\end{proc}
+
+\pred{esImpar}{s: \TLista{\ent}}
+{(\forall i: \ent)(0\leq i<\longitud{s}\implicaLuego esPrimo(s[i]))}
+
+\pred{alMenosUnPrimo}{s: \TLista{\ent}}
+{(\exists i: \ent)(0\leq i<\longitud{s}\yLuego esPrimo(s[i]))}
+
+\aux{sumaPrimos}{s: \TLista{\ent}}{\ent}
+{\sum_{i=0}^{\longitud{s}-1}\IfThenElse{esPrimo(s[i])}{s[i]}{0}}
+
+$$
+	\hat{R}(\hat{f},\bar{D}_n^m)=\frac{1}{|\bar{D}_n^m|}
+	\sum_{i:(X_i,Y_i)\in \bar{D}_n^m}(Y_i-\hat{f}_m,\hat{D}_n^m)
+$$
+
+😎😎😎
+
+\end{document}
