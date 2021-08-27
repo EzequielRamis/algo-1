@@ -1,0 +1,117 @@
+\documentclass[11pt]{article}
+
+\input{Algo1Macros.tex}
+\usepackage{caratula}
+
+\begin{document}
+%Caratula
+\titulo{Trabajo Práctico de Especificación}
+\fecha{08/09/2021}
+\materia{Lc. Computación}
+\integrante{Simon, Martino}{374/21}{martinosimon@gmail.com}
+\integrante{Ramis, Ezequiel}{881/21}{ezequielramis.hello@gmail.com}
+\maketitle
+%Creación de indice
+\tableofcontents
+\newpage
+
+\section{Acceso a base de datos}
+
+Antes de empezar con la especificación, vamos a definir los siguientes
+auxiliares para acceder más declarativamente a los atributos de cada tabla:
+
+\comentario{Tabla Hogares}
+
+\aux{@hogCodusu}{}{\ent}{ord(HOGCODUSU)}
+
+\aux{@hogAño}{}{\ent}{ord(HOGAÑO)}
+
+\aux{@hogTrimestre}{}{\ent}{ord(HOGTRIMESTRE)}
+
+\aux{@hogLatitud}{}{\ent}{ord(HOGLATITUD)}
+
+\aux{@hogLongitud}{}{\ent}{ord(HOGLONGITUD)}
+
+\aux{@ii7}{}{\ent}{ord(II7)}
+
+\aux{@region}{}{\ent}{ord(REGION)}
+
+\aux{@mas500}{}{\ent}{ord(MAS 500)}
+
+\aux{@iv1}{}{\ent}{ord(IV1)}
+
+\aux{@iv2}{}{\ent}{ord(IV2)}
+
+\aux{@ii2}{}{\ent}{ord(II2)}
+
+\aux{@ii3}{}{\ent}{ord(II3)}
+
+\comentario{Tabla Personas}
+
+\aux{@indCodusu}{}{\ent}{ord(INDCODUSU)}
+
+\aux{@componente}{}{\ent}{ord(COMPONENTE)}
+
+\aux{@indAño}{}{\ent}{ord(INDAÑO)}
+
+\aux{@indTrimestre}{}{\ent}{ord(INDTRIMESTRE)}
+
+\aux{@ch4}{}{\ent}{ord(CH4)}
+
+\aux{@ch6}{}{\ent}{ord(CH6)}
+
+\aux{@nivelEd}{}{\ent}{ord(NIVEL ED)}
+
+\aux{@estado}{}{\ent}{ord(ESTADO)}
+
+\aux{@catOcup}{}{\ent}{ord(CAT OCUP)}
+
+\aux{@p47t}{}{\ent}{ord(p47T)}
+
+\aux{@pp04g}{}{\ent}{ord(PP04G)}
+
+\section{Especificación}
+
+\begin{align*}
+	 & esHogarMatriz(th) \wedge esIndividuoMatriz(ti) \wedge                             \\
+	 & \longitud{th} > 0 \wedge \longitud{ti} > 0 \wedge                                 \\
+	 & esTablaHogarCompleta(th) \wedge esTablaIndividuoCompleta(ti) \wedge               \\
+	 & \neg hayIndividuoSinHogar(th, ti) \wedge \neg hayHogarSinIndividuo(th, ti) \wedge \\
+	 & \neg hayIndividuoRepetido(ti) \wedge \neg hayHogarRepetido(th) \wedge             \\
+	 & localizacionesValidas(th) \wedge                                                  \\
+	 & mismaFechaDeRelevamiento(th, ti) \wedge                                           \\
+	 & todosHogaresConMenosDe21Integrantes(th, ti) \wedge                                \\
+	 & todosHogaresConMasHabitacionesQueDormitorios(th, ti) \wedge                       \\
+	 & todosAtributosEnRango(th, ti)                                                     \\
+\end{align*}
+
+\begin{proc}{esEncuestaVálida}{\In th: $eph_h$, \In ti: $eph_i$, \Out result: Bool}{}
+	\pre{ True }
+	\post{result = true \Iff}
+\end{proc}
+
+\pred{esHogarMatriz}{s: $eph_h$}{
+	\paraTodo{i}{\ent}{
+		0\leq i < filas(s) \implicaLuego (\longitud{s[i]} > 0 \wedge \newline \paraTodo{j}{\ent}{
+			0\leq j < filas(s) \implicaLuego \longitud{m[i]} = \longitud{m[j]}
+		}{})
+	}{}
+}
+
+\pred{esIndividuoMatriz}{s: $eph_i$}{
+	\paraTodo{i}{\ent}{
+		0\leq i < filas(s) \implicaLuego (\longitud{s[i]} > 0 \wedge \newline \paraTodo{j}{\ent}{
+			0\leq j < filas(s) \implicaLuego \longitud{m[i]} = \longitud{m[j]}
+		}{})
+	}{}
+}
+
+\pred{hayIndividuoRepetido}{s: $eph_i$}{
+	\existe{a,b}{individuo}{(a\in s \wedge b\in s) \wedge (a[@indCodusu] = b[@indCodusu] \wedge a[@componente] = b[@componente])}{}
+}
+
+\pred{hayHogarRepetido}{s: $eph_h$}{
+	\existe{a,b}{hogar}{(a\in s \wedge b\in s) \wedge (a[@hogCodusu] = b[@hogCodusu])}{}
+}
+
+\end{document}
