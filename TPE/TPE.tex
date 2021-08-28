@@ -3,9 +3,20 @@
 \input{Algo1Macros.tex}
 \usepackage{caratula}
 
+\newcommand{\br}{\hfill\break}
+\newcommand{\bloque}[2]{
+	\ensuremath{
+		$\begin{adjustwidth}{#1}{}
+			$#2$
+		\end{adjustwidth}
+		$
+	}
+}
+
 \begin{document}
 %Caratula
 \titulo{Trabajo Práctico de Especificación}
+\subtitulo{Análisis Habitacional Argentino}
 \fecha{08/09/2021}
 \materia{Lc. Computación}
 \integrante{Simon, Martino}{374/21}{martinosimon@gmail.com}
@@ -15,16 +26,15 @@
 \tableofcontents
 \newpage
 
-\section{Acceso a base de datos}
+\section{Base de datos}
 
 Antes de empezar con la especificación, vamos a definir los siguientes
-auxiliares para acceder más declarativamente a los atributos de cada tabla:
-
-\comentario{Tabla Hogares}
+auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
+\br\comentario{Tabla Hogares}\\
 
 \aux{@hogCodusu}{}{\ent}{ord(HOGCODUSU)}
 
-\aux{@hogAño}{}{\ent}{ord(HOGAÑO)}
+\aux{@hogAño}{}{\ent}{ord(HOGANIO)}
 
 \aux{@hogTrimestre}{}{\ent}{ord(HOGTRIMESTRE)}
 
@@ -46,13 +56,13 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla:
 
 \aux{@ii3}{}{\ent}{ord(II3)}
 
-\comentario{Tabla Personas}
+\br\comentario{Tabla Personas}\\
 
 \aux{@indCodusu}{}{\ent}{ord(INDCODUSU)}
 
 \aux{@componente}{}{\ent}{ord(COMPONENTE)}
 
-\aux{@indAño}{}{\ent}{ord(INDAÑO)}
+\aux{@indAño}{}{\ent}{ord(INDANIO)}
 
 \aux{@indTrimestre}{}{\ent}{ord(INDTRIMESTRE)}
 
@@ -71,47 +81,41 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla:
 \aux{@pp04g}{}{\ent}{ord(PP04G)}
 
 \section{Especificación}
+\subsection{Ejercicio 1}
 
-\begin{align*}
-	 & esHogarMatriz(th) \wedge esIndividuoMatriz(ti) \wedge                             \\
-	 & \longitud{th} > 0 \wedge \longitud{ti} > 0 \wedge                                 \\
-	 & esTablaHogarCompleta(th) \wedge esTablaIndividuoCompleta(ti) \wedge               \\
-	 & \neg hayIndividuoSinHogar(th, ti) \wedge \neg hayHogarSinIndividuo(th, ti) \wedge \\
-	 & \neg hayIndividuoRepetido(ti) \wedge \neg hayHogarRepetido(th) \wedge             \\
-	 & localizacionesValidas(th) \wedge                                                  \\
-	 & mismaFechaDeRelevamiento(th, ti) \wedge                                           \\
-	 & todosHogaresConMenosDe21Integrantes(th, ti) \wedge                                \\
-	 & todosHogaresConMasHabitacionesQueDormitorios(th, ti) \wedge                       \\
-	 & todosAtributosEnRango(th, ti)                                                     \\
-\end{align*}
-
-\begin{proc}{esEncuestaVálida}{\In th: $eph_h$, \In ti: $eph_i$, \Out result: Bool}{}
+\begin{proc}{esEncuestaVálida}{\In th: $eph_h$, \In ti: $eph_i$, \Out result: \bool}{}
 	\pre{ True }
-	\post{result = true \Iff}
+	\post{ result=true \Iff (
+		\bloque{+6em}{
+			esMatriz(th) \wedge esMatriz(ti) \wedge\\
+			\longitud{th} > 0 \wedge \longitud{ti} > 0 \wedge\\
+			esTablaHogarCompleta(th) \wedge esTablaIndividuoCompleta(ti) \wedge\\
+			\neg hayIndividuoSinHogar(th, ti) \wedge \neg hayHogarSinIndividuo(th, ti) \wedge\\
+			\neg hayIndividuoRepetido(ti) \wedge \neg hayHogarRepetido(th) \wedge\\
+			localizacionesValidas(th) \wedge\\
+			mismaFechaDeRelevamiento(th, ti) \wedge\\
+			todosHogaresConMenosDe21Integrantes(th, ti) \wedge\\
+			todosHogaresConMasHabitacionesQueDormitorios(th, ti) \wedge\\
+			todosAtributosEnRango(th, ti)
+		}
+		)}
 \end{proc}
 
-\pred{esHogarMatriz}{s: $eph_h$}{
-	\paraTodo{i}{\ent}{
-		0\leq i < filas(s) \implicaLuego (\longitud{s[i]} > 0 \wedge \newline \paraTodo{j}{\ent}{
-			0\leq j < filas(s) \implicaLuego \longitud{m[i]} = \longitud{m[j]}
-		}{})
-	}{}
-}
-
-\pred{esIndividuoMatriz}{s: $eph_i$}{
-	\paraTodo{i}{\ent}{
-		0\leq i < filas(s) \implicaLuego (\longitud{s[i]} > 0 \wedge \newline \paraTodo{j}{\ent}{
-			0\leq j < filas(s) \implicaLuego \longitud{m[i]} = \longitud{m[j]}
-		}{})
-	}{}
+\pred{esMatriz}{s: \matriz{dato}}{
+	\longitud{s} > 0 \yLuego \neg \existe{t}{\TLista{dato}}{(t\in s) \wedge \longitud{head(s)}\neq\longitud{t}}{}
 }
 
 \pred{hayIndividuoRepetido}{s: $eph_i$}{
-	\existe{a,b}{individuo}{(a\in s \wedge b\in s) \wedge (a[@indCodusu] = b[@indCodusu] \wedge a[@componente] = b[@componente])}{}
+	\existe{a,b}{individuo}{(a\in s \wedge b\in s) \wedge
+		a[@indCodusu] = b[@indCodusu] \wedge
+		a[@componente] = b[@componente]}
+	{}
 }
 
 \pred{hayHogarRepetido}{s: $eph_h$}{
-	\existe{a,b}{hogar}{(a\in s \wedge b\in s) \wedge (a[@hogCodusu] = b[@hogCodusu])}{}
+	\existe{a,b}{hogar}{(a\in s \wedge b\in s) \wedge
+		a[@hogCodusu] = b[@hogCodusu]}
+	{}
 }
 
 \end{document}
