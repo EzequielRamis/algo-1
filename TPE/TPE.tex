@@ -101,16 +101,15 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 			\neg hayIndividuoSinHogar(th, ti) \wedge \neg hayHogarSinIndividuo(th, ti) \wedge\\
 			% Listo
 			\neg hayIndividuoRepetido(ti) \wedge \neg hayHogarRepetido(th) \wedge\\
-			% Falta
-			localizacionesValidas(th) \wedge\\
-			% Falta
+			% Listo
 			mismaFechaDeRelevamiento(th, ti) \wedge\\
 			% Listo
 			todosHogaresConMenosDe21Integrantes(th, ti) \wedge\\
 			% Listo
 			todosHogaresConMasHabitacionesQueDormitorios(th) \wedge\\
 			% Listo
-			todosAtributosEnRango(th, ti)
+			todosAtributosEnRango(th, ti) \wedge\\
+			atributosValidos(th, ti)
 		}
 		)}
 \end{proc}
@@ -156,6 +155,25 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 		a[@hogCodusu] = b[@hogCodusu]}
 }
 
+\pred{mismaFechaDeRelevamiento}{th: $eph_h$, ti:
+	$eph_i$}{
+	(|th|>0 \wedge |ti|>0) \implicaLuego
+	(\bloque{+2em}{
+		\paraTodo{h}{hogar}{
+			h\in th \implica ( h[@hogA\tilde n o] =
+			head(th)[@hogA\tilde n o] \wedge\\
+			h[@hogTrimestre] = head(th)[@hogTrimestre]
+			)
+		} \wedge\\
+		\paraTodo{i}{individuo}{
+			i\in ti \implica ( i[@indA\tilde n o] =
+			head(th)[@hogA\tilde n o] \wedge\\
+			i[@indTrimestre] = head(th)[@hogTrimestre]
+			)
+		}
+	})
+}
+
 \pred{todosHogaresConMenosDe21Integrantes}{th: $eph_h$, ti:
 $eph_i$}{
 \paraTodo{h}{hogar}{
@@ -181,14 +199,24 @@ h\in th \implica 21 > \sum_{i\in ti}
 		i[@p47t]}}
 \pred{atributosValidos}{th: $eph_h$, ti:
 	$eph_i$}{
-	\paraTodo{h}{hogar}{1900\leq h[@hogAño]\leq 2100 \wedge \\ 1\leq
+	\paraTodo{h}{hogar}{1800\leq h[@hogA \tilde n o] \wedge \\ 1\leq
 		h[@hogTrimestre]\leq 4 \wedge \\ 1\leq
-		h[@iv2]\leq 10000 \wedge \\ 1\leq
-		h[@ii2]\leq 10000}
-	\wedge\\ \paraTodo {i}{individuo}{1\leq i[@componente]\leq 5000 \wedge \\ 1900\leq
-		i[@indAño]\leq 2100 \wedge \\ 1\leq 0\leq
+		h[@iv2] \wedge \\ 1\leq h[@ii2]}
+	\wedge\\ \paraTodo {i}{individuo}{1\leq i[@componente] \wedge \\ 1800\leq
+		i[@indA\tilde n o] \wedge \\ 1\leq
 		i[@indTrimestre]\leq 4 \wedge \\ 0\leq
-		i[@ch6]\leq 200}
+		i[@ch6]}
 }
+
+\subsection{Ejercicio 2}
+
+\begin{proc}{histHabitacional}{\In th: $eph_h$, \In ti: $eph_i$, \In region: \ent, \Out res: \TLista{\ent}}{}
+	\pre{ True /* Por ahora nada */ }
+	\post{ \paraTodo{i}{\ent}{\bloque{+2em}{0\leq i < |res| \implicaLuego res[i] =
+				\#casaConNHabitaciones(th, i)}	}}
+\end{proc}
+
+\aux{\#casaConNHabitaciones}{th: $eph_h$, n: \ent}{\ent}{\sum_{h\in th}\IfThenElse{h[@iv1]=1 \wedge h[@iv2]=n}{1}{0}}
+
 \end{document}
 
