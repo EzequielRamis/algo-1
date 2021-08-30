@@ -26,7 +26,7 @@
 \tableofcontents
 \newpage
 
-\section{Base de datos}
+\section{Auxiliares para base de datos}
 
 Antes de empezar con la especificación, vamos a definir los siguientes
 auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
@@ -56,6 +56,8 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 
 \aux{@ii3}{}{\ent}{ord(II3)}
 
+\aux{\#atributosHogar}{}{\ent}{12}
+
 \br\comentario{Tabla Personas}\\
 
 \aux{@indCodusu}{}{\ent}{ord(INDCODUSU)}
@@ -80,6 +82,8 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 
 \aux{@pp04g}{}{\ent}{ord(PP04G)}
 
+\aux{\#atributosPersona}{}{\ent}{11}
+
 \section{Especificación}
 \subsection{Ejercicio 1}
 
@@ -87,35 +91,104 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 	\pre{ True }
 	\post{ result=true \Iff (
 		\bloque{+6em}{
+			% Listo
 			esMatriz(th) \wedge esMatriz(ti) \wedge\\
-			\longitud{th} > 0 \wedge \longitud{ti} > 0 \wedge\\
-			esTablaHogarCompleta(th) \wedge esTablaIndividuoCompleta(ti) \wedge\\
+			% Listo
+			|th| > 0 \wedge |ti| > 0 \wedge\\
+			% Listo
+			esTablaCompleta(th, \#atributosHogar) \wedge esTablaCompleta(ti, \#atributosPersona) \wedge\\
+			% Listo
 			\neg hayIndividuoSinHogar(th, ti) \wedge \neg hayHogarSinIndividuo(th, ti) \wedge\\
+			% Listo
 			\neg hayIndividuoRepetido(ti) \wedge \neg hayHogarRepetido(th) \wedge\\
+			% Falta
 			localizacionesValidas(th) \wedge\\
+			% Falta
 			mismaFechaDeRelevamiento(th, ti) \wedge\\
+			% Listo
 			todosHogaresConMenosDe21Integrantes(th, ti) \wedge\\
-			todosHogaresConMasHabitacionesQueDormitorios(th, ti) \wedge\\
+			% Listo
+			todosHogaresConMasHabitacionesQueDormitorios(th) \wedge\\
+			% Listo
 			todosAtributosEnRango(th, ti)
 		}
 		)}
 \end{proc}
 
 \pred{esMatriz}{s: \matriz{dato}}{
-	\longitud{s} > 0 \yLuego \neg \existe{t}{\TLista{dato}}{(t\in s) \wedge \longitud{head(s)}\neq\longitud{t}}{}
+	|s| > 0 \implicaLuego \neg \existe{t}{\TLista{dato}}{(t\in s) \wedge |head(s)|\neq |t|}
+}
+
+\pred{esTablaCompleta}{s: \matriz{dato}, l: \ent}{
+	\paraTodo{f}{\TLista{dato}}{
+		f\in s \implica |f| = l
+	}
+}
+
+\pred{hayIndividuoSinHogar}{th: $eph_h$, ti: $eph_i$}{
+	\existe{i}{individuo}{
+		i\in ti \wedge \bloque{+1em}{
+			\neg\existe{h}{hogar}{
+				h\in th \wedge h[@hogCodusu] = i[@indCodusu]
+			}
+		}
+	}
+}
+
+\pred{hayHogarSinIndividuo}{th: $eph_h$, ti: $eph_i$}{
+	\existe{h}{hogar}{
+		h\in th \wedge \bloque{+1em}{
+			\neg\existe{i}{individuo}{
+				i\in ti \wedge i[@indCodusu] = h[@hogCodusu]
+			}
+		}
+	}
 }
 
 \pred{hayIndividuoRepetido}{s: $eph_i$}{
 	\existe{a,b}{individuo}{(a\in s \wedge b\in s) \wedge
 		a[@indCodusu] = b[@indCodusu] \wedge
 		a[@componente] = b[@componente]}
-	{}
 }
 
 \pred{hayHogarRepetido}{s: $eph_h$}{
 	\existe{a,b}{hogar}{(a\in s \wedge b\in s) \wedge
 		a[@hogCodusu] = b[@hogCodusu]}
-	{}
 }
 
+\pred{todosHogaresConMenosDe21Integrantes}{th: $eph_h$, ti:
+$eph_i$}{
+\paraTodo{h}{hogar}{
+h\in th \implica 21 > \sum_{i\in ti}
+\IfThenElse{i[@indCodusu]=h[@hogCodusu]}{1}{0}} }
+
+\pred{todosHogaresConMasHabitacionesQueDormitorios}{th: $eph_h$}{
+	\neg \existe{h}{hogar}{h[@iv2] < h[@ii2]}
+}
+
+\pred{todosAtributosEnRango}{th: $eph_h$, ti:
+	$eph_i$}{
+	\paraTodo{h}{hogar}{1\leq h[@ii7]\leq 3 \wedge\\ 1\leq
+		h[@region]\leq 6 \wedge\\ 0\leq
+		h[@mas500]\leq 1\wedge\\ 1\leq
+		h[@iv1]\leq 5\wedge\\ 1\leq
+		h[@ii3]\leq 2}
+	\wedge\\ \paraTodo {i}{individuo}{1\leq i[@ch4]\leq 2 \wedge\\ 0\leq
+		i[@nivelEd]\leq 1 \wedge\\ -1\leq
+		i[@estado]\leq 1 \wedge\\ 0\leq
+		i[@catOcup]\leq 4 \wedge\\ 1\leq
+		i[@pp04g]\leq 10 \wedge \\ -1\leq
+		i[@p47t]}}
+\pred{atributosValidos}{th: $eph_h$, ti:
+	$eph_i$}{
+	\paraTodo{h}{hogar}{1900\leq h[@hogAño]\leq 2100 \wedge \\ 1\leq
+		h[@hogTrimestre]\leq 4 \wedge \\ 1\leq
+		h[@iv2]\leq 10000 \wedge \\ 1\leq
+		h[@ii2]\leq 10000}
+	\wedge\\ \paraTodo {i}{individuo}{1\leq i[@componente]\leq 5000 \wedge \\ 1900\leq
+		i[@indAño]\leq 2100 \wedge \\ 1\leq 0\leq
+		i[@indTrimestre]\leq 4 \wedge \\ 0\leq
+		i[@ch6]\leq 200}
+}
 \end{document}
+
