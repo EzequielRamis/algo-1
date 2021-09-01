@@ -89,30 +89,30 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 
 \begin{proc}{esEncuestaVálida}{\In th: $eph_h$, \In ti: $eph_i$, \Out result: \bool}{}
 	\pre{ True }
-	\post{ result=true \Iff (
-		\bloque{+6em}{
-			% Listo
-			esMatriz(th) \wedge esMatriz(ti) \wedge\\
-			% Listo
-			|th| > 0 \wedge |ti| > 0 \wedge\\
-			% Listo
-			esTablaCompleta(th, \#atributosHogar) \wedge esTablaCompleta(ti, \#atributosPersona) \wedge\\
-			% Listo
-			\neg hayIndividuoSinHogar(th, ti) \wedge \neg hayHogarSinIndividuo(th, ti) \wedge\\
-			% Listo
-			\neg hayIndividuoRepetido(ti) \wedge \neg hayHogarRepetido(th) \wedge\\
-			% Listo
-			mismaFechaDeRelevamiento(th, ti) \wedge\\
-			% Listo
-			todosHogaresConMenosDe21Integrantes(th, ti) \wedge\\
-			% Listo
-			todosHogaresConMasHabitacionesQueDormitorios(th) \wedge\\
-			% Listo
-			todosAtributosEnRango(th, ti) \wedge\\
-			atributosValidos(th, ti)
-		}
-		)}
+	\post{ result=true \Iff encuestaValida(th, ti)}
 \end{proc}
+
+\pred{encuestaValida}{th: $eph_h$, ti: $eph_i$}{
+	% Listo
+	esMatriz(th) \wedge esMatriz(ti) \wedge\\
+	% Listo
+	|th| > 0 \wedge |ti| > 0 \wedge\\
+	% Listo
+	esTablaCompleta(th, \#atributosHogar) \wedge esTablaCompleta(ti, \#atributosPersona) \wedge\\
+	% Listo
+	\neg hayIndividuoSinHogar(th, ti) \wedge \neg hayHogarSinIndividuo(th, ti) \wedge\\
+	% Listo
+	\neg hayIndividuoRepetido(ti) \wedge \neg hayHogarRepetido(th) \wedge\\
+	% Listo
+	mismaFechaDeRelevamiento(th, ti) \wedge\\
+	% Listo
+	todosHogaresConMenosDe21Integrantes(th, ti) \wedge\\
+	% Listo
+	todosHogaresConMasHabitacionesQueDormitorios(th) \wedge\\
+	% Listo
+	todosAtributosEnRango(th, ti) \wedge\\
+	atributosValidos(th, ti)
+}
 
 \pred{esMatriz}{s: \matriz{dato}}{
 	|s| > 0 \implicaLuego \neg \existe{t}{\TLista{dato}}{(t\in s) \wedge |head(s)|\neq |t|}
@@ -211,12 +211,51 @@ h\in th \implica 21 > \sum_{i\in ti}
 \subsection{Ejercicio 2}
 
 \begin{proc}{histHabitacional}{\In th: $eph_h$, \In ti: $eph_i$, \In region: \ent, \Out res: \TLista{\ent}}{}
-	\pre{ True /* Por ahora nada */ }
-	\post{ \paraTodo{i}{\ent}{\bloque{+2em}{0\leq i < |res| \implicaLuego res[i] =
-				\#casaConNHabitaciones(th, i)}	}}
+	\pre{ encuestaValida(th, ti) }
+	\post{ |res| = \#deHabitaciones(h) \leftrightarrow
+		esCasaConMasHabitacionesEnRegion(th, region, hogar) \yLuego
+		\bloque{+6em}{
+			(\forall{i: \ent})(0\leq i < |res| \implicaLuego res[i] =
+			\#casaConNHabitaciones(th, i + 1)
+			)}
+	}
 \end{proc}
 
+\aux{\#deHabitaciones}{h:hogar}{\ent}{h[@iv2]}
+
 \aux{\#casaConNHabitaciones}{th: $eph_h$, n: \ent}{\ent}{\sum_{h\in th}\IfThenElse{h[@iv1]=1 \wedge h[@iv2]=n}{1}{0}}
+
+\pred{esCasaConMasHabitacionesEnRegion}{th: $eph_h$, r:
+	\ent, h : hogar}{(\forall{i : hogar})(h[@iv2]\geq
+	i[@iv2])
+}
+
+\subsection{Ejercicio 3}
+
+\begin{proc}{laCasaEstaQuedandoChica}{\In th: $eph_h$, \In ti: $eph_i$, \Out res: \TLista{\float}}{}
+	\pre{ encuestaValida(th, ti) }
+	\post{  a }
+\end{proc}
+
+\aux{totalCasasPorRegion}{th: $eph_h$, r: \ent}{\ent}{
+	\sum_{h\in th}\IfThenElse{h[@iv1]=1 \wedge h[@region] = r}{1}{0}
+}
+
+\aux{totalCasasCriticasPorRegion}{th: $eph_h$, ti: $eph_i$, r: \ent}{\ent}{
+	\sum_{h\in th}\IfThenElse{esCasaCritica(h, ti) \wedge h[@region] = r}{1}{0}
+}
+
+\pred{esCasaCritica}{h: hogar, ti: $eph_i$}{
+	h[@iv1]=1 \wedge esHacinamientoCritico(h, ti) \wedge h[@mas500] = 0
+}
+
+\pred{esHacinamientoCritico}{h: hogar, ti: $eph_i$}{
+	\#personasEnHogar(h, ti) / h[@ii2] > 3
+}
+
+\aux{\#personasEnHogar}{h: hogar, ti: $eph_i$}{\ent}{
+	\sum_{i\in ti} \IfThenElse{i[@indCodusu] = h[@hogCodusu]}{1}{0}
+}
 
 \end{document}
 
