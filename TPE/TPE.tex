@@ -100,6 +100,10 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 	i[@indCodusu] = h[@hogCodusu]
 }
 
+\pred{hogaresConTrimestresIguales}{h: hogar, g: hogar}{
+	h[@hogTrimestre] = g[@hogTrimestre]
+}
+
 \section{Especificación}
 \subsection{Ejercicio 1}
 
@@ -127,8 +131,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 	todosHogaresConMasHabitacionesQueDormitorios(th) \wedge\\
 	% Listo
 	todosAtributosEnRango(th, ti) \wedge\\
-	atributosValidos(th, ti)\\
-	/*falta ver que si o si que ninguna region este vacia de hogares */
+	atributosValidos(th, ti)
 }
 
 \pred{esMatriz}{s: \matriz{dato}}{
@@ -180,8 +183,8 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 	(\bloque{+2em}{
 		\paraTodo{h}{hogar}{
 			h\in th \implica (\bloque{+2em}{
-				h[@hogA\tilde n o] = head(th)[@hogA\tilde no] \wedge\\
-				h[@hogTrimestre] = head(th)[@hogTrimestre]
+				h[@hogA\tilde no] = head(h)[@hogA\tilde no] \wedge\\
+				hogaresConTrimestresIguales(h, head(th))
 			})
 		} \wedge\\
 		\paraTodo{i}{individuo}{
@@ -240,7 +243,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 \subsection{Ejercicio 2}
 
 \begin{proc}{histHabitacional}{\In th: $eph_h$, \In ti: $eph_i$, \In region: \ent, \Out res: \TLista{\ent}}{}
-	\pre{ encuestaValida(th, ti) \wedge 1\leq region\leq 6 /*falta ver que si o si que la region tenga al menos una casa*/}
+	\pre{ encuestaValida(th, ti) \wedge 1\leq region\leq 6 \wedge (\exists{h: hogar})(h\in th \wedge h[@region] = region \wedge esCasa(h))}
 	\post{ longitudDeHistograma(th, res) \yLuego
 		\bloque{+6em}{
 			(\forall{i: \ent})
@@ -266,7 +269,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 \subsection{Ejercicio 3}
 
 \begin{proc}{laCasaEstaQuedandoChica}{\In th: $eph_h$, \In ti: $eph_i$, \Out res: \TLista{\float}}{}
-	\pre{ encuestaValida(th, ti) \yLuego \neg(\exists{reg: \ent})(1\leq region\leq 6 \wedge regionVaciaDeCasas(th,reg)})
+	\pre{ encuestaValida(th, ti) \yLuego (\forall{reg: \ent})(1\leq reg\leq 6 \implicaLuego\#casasPorRegion(th, reg)>0)}
 	\post{ |res| = 6 \yLuego
 		\bloque{+6em}{
 			\paraTodo{i}{\ent}{
@@ -277,10 +280,6 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 		}
 	}
 \end{proc}
-
-\pred{regionVaciaDeCasas}{th: $eph_h$, r: \ent}{
-	\#casasPorRegion(th, r) = 0
-}
 
 \aux{\#casasPorRegion}{th: $eph_h$, r: \ent}{\ent}{
 	\sum_{h\in th}\IfThenElse{esCasa(h) \wedge h[@region] = r}{1}{0}
@@ -301,6 +300,59 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 }
 
 \pred{estaEnGranAglomerado}{h: hogar}{h[@mas500] = 1}
+
+\subsection{Ejercicio 4}
+
+\begin{proc}{creceElTeleworkingEnCiudadesGrandes}{\In t1h: $eph_h$, \In t1i: $eph_i$, \In t2h: $eph_h$, \In t2i: $eph_i$, \Out res: \bool}{}
+	\pre{ (encuestaValida(t1h, t1i) \wedge encuestaValida(t2h, t2i)) \yLuego (
+		\bloque{+6em}{
+			esHogarConA\tilde noPrevio(head(t1h), head(t2h)) \wedge\\
+			hogaresConTrimestresIguales(head(t1h), head(t2h))
+		})
+	}
+	\post{ res = true \Iff teleworkingEnCiudadesGrandes(t1h, t1i) < teleworkingEnCiudadesGrandes(t2h,t2i) }
+\end{proc}
+
+\pred{esHogarConAñoPrevio}{h: hogar, g: hogar}{
+	h[@hogA\tilde no] < g[@hogA\tilde no]
+}
+
+\aux{teleworkingEnCiudadesGrandes}{th: $eph_h$, ti: $eph_i$}{\float}{
+	\bloque{+2em}{
+		\#personasTrabajandoADistanciaEnCiudadesGrandes(th, ti)/\#personasTrabajandoEnCiudadesGrandes(th, ti)
+	}
+}
+
+\aux{\#personasTrabajandoADistanciaEnCiudadesGrandes}{th: $eph_h$, ti: $eph_i$}{\ent}{
+	\bloque{+2em}{
+		\sum_{i\in ti}\IfThenElse{viveEnDeptoOCasaEnCiudadGrande(i, th) \wedge trabajaADistancia(i)}{1}{0}
+	}
+}
+
+\aux{\#personasTrabajandoEnCiudadesGrandes}{th: $eph_h$, ti: $eph_i$}{\ent}{
+	\bloque{+2em}{
+		\sum_{i\in ti}\IfThenElse{viveEnCiudadGrande(i, th) \wedge trabaja(i)}{1}{0}
+	}
+}
+
+\pred{viveEnDeptoOCasaEnCiudadGrande}{i: individuo, th: $eph_h$}{
+	\existe{h}{hogar}{
+		h\in th \wedge\\ personaEnHogar(i, h) \wedge h[@mas500] = 1 \wedge (h[@iv1] = 1 \vee h[@iv1] = 2)
+	}
+}
+
+\pred{trabajaADistancia}{i: individuo}{
+	i[@pp04g]=6 \wedge trabaja(i)
+}
+
+\pred{trabaja}{i: individuo}{
+	i[@estado] = 1
+}
+
+\pred{viveEnCiudadGrande}{i: individuo, th: $eph_h$}{
+	\existe{h}{hogar}{
+		h\in th \wedge\\ personaEnHogar(i, h) \wedge h[@mas500] = 1
+	}}
 
 \end{document}
 
