@@ -26,15 +26,15 @@
 \tableofcontents
 \newpage
 
-\section{Auxiliares para base de datos}
+\section{Auxiliares para base de datos y generales}
 
-Antes de empezar con la especificación, vamos a definir los siguientes
-auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
-\br\comentario{Tabla Hogares}\\
+Antes de empezar con la especificación de procedimientos, vamos a definir
+auxiliares para acceder más declarativamente a los atributos de cada tabla, y
+para uso general: \\ \br\comentario{Tabla Hogares}\\
 
 \aux{@hogCodusu}{}{\ent}{ord(HOGCODUSU)}
 
-\aux{@hogAño}{}{\ent}{ord(HOGANIO)}
+\aux{@hogAño}{}{\ent}{ord(HOGA\tilde NO)}
 
 \aux{@hogTrimestre}{}{\ent}{ord(HOGTRIMESTRE)}
 
@@ -46,7 +46,7 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 
 \aux{@region}{}{\ent}{ord(REGION)}
 
-\aux{@mas500}{}{\ent}{ord(MAS 500)}
+\aux{@mas500}{}{\ent}{ord(MAS\_500)}
 
 \aux{@iv1}{}{\ent}{ord(IV1)}
 
@@ -56,15 +56,13 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 
 \aux{@ii3}{}{\ent}{ord(II3)}
 
-\aux{\#atributosHogar}{}{\ent}{12}
-
 \br\comentario{Tabla Personas}\\
 
 \aux{@indCodusu}{}{\ent}{ord(INDCODUSU)}
 
 \aux{@componente}{}{\ent}{ord(COMPONENTE)}
 
-\aux{@indAño}{}{\ent}{ord(INDANIO)}
+\aux{@indAño}{}{\ent}{ord(INDA\tilde NO)}
 
 \aux{@indTrimestre}{}{\ent}{ord(INDTRIMESTRE)}
 
@@ -78,18 +76,36 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 
 \aux{@catOcup}{}{\ent}{ord(CAT OCUP)}
 
-\aux{@p47t}{}{\ent}{ord(p47T)}
+\aux{@p47t}{}{\ent}{ord(P47T)}
 
 \aux{@pp04g}{}{\ent}{ord(PP04G)}
 
+\br\comentario{Varios}\\
+
+\aux{\#atributosHogar}{}{\ent}{12}
+
 \aux{\#atributosPersona}{}{\ent}{11}
+
+\aux{\#habitaciones}{h: hogar}{dato}{h[@iv2]}
+
+\aux{\#personasEnHogar}{ti: $eph_i$, h: hogar}{\ent}{
+	\sum_{i\in ti} \IfThenElse{personaEnHogar(i, h)}{1}{0}
+}
+
+\pred{esCasa}{h: hogar}{
+	h[@iv1]=1
+}
+
+\pred{personaEnHogar}{i: individuo, h: hogar} {
+	i[@indCodusu] = h[@hogCodusu]
+}
 
 \section{Especificación}
 \subsection{Ejercicio 1}
 
 \begin{proc}{esEncuestaVálida}{\In th: $eph_h$, \In ti: $eph_i$, \Out result: \bool}{}
 	\pre{ True }
-	\post{ result=true \Iff encuestaValida(th, ti)}
+	\post{ result=true \Iff encuestaValida(th, ti) }
 \end{proc}
 
 \pred{encuestaValida}{th: $eph_h$, ti: $eph_i$}{
@@ -115,7 +131,10 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 }
 
 \pred{esMatriz}{s: \matriz{dato}}{
-	|s| > 0 \implicaLuego \neg \existe{t}{\TLista{dato}}{(t\in s) \wedge |head(s)|\neq |t|}
+	|s| > 0 \implicaLuego
+	\neg\existe{t}{\TLista{dato}}{
+		(t\in s) \wedge |head(s)|\neq |t|
+	}
 }
 
 \pred{esTablaCompleta}{s: \matriz{dato}, l: \ent}{
@@ -128,7 +147,7 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 	\existe{i}{individuo}{
 		i\in ti \wedge \bloque{+1em}{
 			\neg\existe{h}{hogar}{
-				h\in th \wedge h[@hogCodusu] = i[@indCodusu]
+				h\in th \wedge personaEnHogar(i, h)
 			}
 		}
 	}
@@ -138,7 +157,7 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 	\existe{h}{hogar}{
 		h\in th \wedge \bloque{+1em}{
 			\neg\existe{i}{individuo}{
-				i\in ti \wedge i[@indCodusu] = h[@hogCodusu]
+				i\in ti \wedge personaEnHogar(i, h)
 			}
 		}
 	}
@@ -155,107 +174,122 @@ auxiliares para acceder más declarativamente a los atributos de cada tabla: \\
 		a[@hogCodusu] = b[@hogCodusu]}
 }
 
-\pred{mismaFechaDeRelevamiento}{th: $eph_h$, ti:
-	$eph_i$}{
-	(|th|>0 \wedge |ti|>0) \implicaLuego
+\pred{mismaFechaDeRelevamiento}{th: $eph_h$, ti: $eph_i$}{
+	(|th| > 0 \wedge |ti| > 0) \implicaLuego
 	(\bloque{+2em}{
 		\paraTodo{h}{hogar}{
-			h\in th \implica ( h[@hogA\tilde n o] =
-			head(th)[@hogA\tilde n o] \wedge\\
-			h[@hogTrimestre] = head(th)[@hogTrimestre]
-			)
+			h\in th \implica (\bloque{+2em}{
+				h[@hogA\tilde n o] = head(th)[@hogA\tilde no] \wedge\\
+				h[@hogTrimestre] = head(th)[@hogTrimestre]
+			})
 		} \wedge\\
 		\paraTodo{i}{individuo}{
-			i\in ti \implica ( i[@indA\tilde n o] =
-			head(th)[@hogA\tilde n o] \wedge\\
-			i[@indTrimestre] = head(th)[@hogTrimestre]
-			)
+			i\in ti \implica (\bloque{+2em}{
+				i[@indA\tilde n o] = head(th)[@hogA\tilde no] \wedge\\
+				i[@indTrimestre] = head(th)[@hogTrimestre]
+			})
 		}
 	})
 }
 
 \pred{todosHogaresConMenosDe21Integrantes}{th: $eph_h$, ti:
-$eph_i$}{
-\paraTodo{h}{hogar}{
-h\in th \implica 21 > \sum_{i\in ti}
-\IfThenElse{i[@indCodusu]=h[@hogCodusu]}{1}{0}} }
+	$eph_i$}{
+	\paraTodo{h}{hogar}{
+		h\in th \implica 21 > \#personasEnHogar(ti, h)
+	}
+}
 
 \pred{todosHogaresConMasHabitacionesQueDormitorios}{th: $eph_h$}{
-	\neg \existe{h}{hogar}{h[@iv2] < h[@ii2]}
+	\neg \existe{h}{hogar}{\#habitaciones(h) < h[@ii2]}
 }
 
 \pred{todosAtributosEnRango}{th: $eph_h$, ti:
 	$eph_i$}{
-	\paraTodo{h}{hogar}{1\leq h[@ii7]\leq 3 \wedge\\ 1\leq
+	\paraTodo{h}{hogar}{
+		1\leq h[@ii7]\leq 3 \wedge\\ 1\leq
 		h[@region]\leq 6 \wedge\\ 0\leq
 		h[@mas500]\leq 1\wedge\\ 1\leq
 		h[@iv1]\leq 5\wedge\\ 1\leq
-		h[@ii3]\leq 2}
-	\wedge\\ \paraTodo {i}{individuo}{1\leq i[@ch4]\leq 2 \wedge\\ 0\leq
+		h[@ii3]\leq 2
+	}\wedge\\
+	\paraTodo {i}{individuo}{
+		1\leq i[@ch4]\leq 2 \wedge\\ 0\leq
 		i[@nivelEd]\leq 1 \wedge\\ -1\leq
 		i[@estado]\leq 1 \wedge\\ 0\leq
 		i[@catOcup]\leq 4 \wedge\\ 1\leq
 		i[@pp04g]\leq 10 \wedge \\ -1\leq
-		i[@p47t]}}
-\pred{atributosValidos}{th: $eph_h$, ti:
-	$eph_i$}{
-	\paraTodo{h}{hogar}{1800\leq h[@hogA \tilde n o] \wedge \\ 1\leq
-		h[@hogTrimestre]\leq 4 \wedge \\ 1\leq
-		h[@iv2] \wedge \\ 1\leq h[@ii2]}
-	\wedge\\ \paraTodo {i}{individuo}{1\leq i[@componente] \wedge \\ 1800\leq
+		i[@p47t]
+	}
+}
+
+\pred{atributosValidos}{th: $eph_h$, ti: $eph_i$}{
+	\paraTodo{h}{hogar}{
+		1800\leq h[@hogA \tilde n o] \wedge \\ 1\leq
+		h[@hogTrimestre]\leq 4 \wedge \\ 1\leq \#habitaciones(h) \wedge
+		\\ 1\leq h[@ii2]
+	}\wedge\\
+	\paraTodo {i}{individuo}{
+		1\leq i[@componente] \wedge \\ 1800\leq
 		i[@indA\tilde n o] \wedge \\ 1\leq
 		i[@indTrimestre]\leq 4 \wedge \\ 0\leq
-		i[@ch6]}
+		i[@ch6]
+	}
 }
 
 \subsection{Ejercicio 2}
 
 \begin{proc}{histHabitacional}{\In th: $eph_h$, \In ti: $eph_i$, \In region: \ent, \Out res: \TLista{\ent}}{}
 	\pre{ encuestaValida(th, ti) }
-	\post{ |res| = \#deHabitaciones(h) \leftrightarrow
-		esCasaConMasHabitacionesEnRegion(th, region, hogar) \yLuego
+	\post{ longitudDeHistograma(th, res) \yLuego
 		\bloque{+6em}{
-			(\forall{i: \ent})(0\leq i < |res| \implicaLuego res[i] =
-			\#casaConNHabitaciones(th, i + 1)
-			)}
+			(\forall{i: \ent})
+			(0\leq i < |res| \implicaLuego res[i] =	\#casaConNHabitaciones(th, i + 1))
+		}
 	}
 \end{proc}
 
-\aux{\#deHabitaciones}{h:hogar}{\ent}{h[@iv2]}
+\aux{\#casaConNHabitaciones}{th: $eph_h$, n: \ent}{\ent}{\sum_{h\in th}\IfThenElse{esCasa(h) \wedge \#habitaciones(h) = n}{1}{0}}
 
-\aux{\#casaConNHabitaciones}{th: $eph_h$, n: \ent}{\ent}{\sum_{h\in th}\IfThenElse{h[@iv1]=1 \wedge h[@iv2]=n}{1}{0}}
-
-\pred{esCasaConMasHabitacionesEnRegion}{th: $eph_h$, r:
-	\ent, h : hogar}{(\forall{i : hogar})(h[@iv2]\geq
-	i[@iv2])
+\pred{longitudDeHistograma}{th: $eph_h$, res: \TLista{\ent}}{
+	\existe{h}{hogar}{
+		h\in th \wedge\\ \paraTodo{g}{hogar}{
+			g\in th \implica \#habitaciones(h)\geq \#habitaciones(g)
+		} \wedge\\ \#habitaciones(h) = |res|}
 }
 
 \subsection{Ejercicio 3}
 
 \begin{proc}{laCasaEstaQuedandoChica}{\In th: $eph_h$, \In ti: $eph_i$, \Out res: \TLista{\float}}{}
 	\pre{ encuestaValida(th, ti) }
-	\post{  a }
+	\post{ |res| = 6 \yLuego
+		\bloque{+6em}{
+			\paraTodo{i}{\ent}{
+				0 \leq i < |res| \implicaLuego\\ res[i] =
+				totalCasasCriticasPorRegion(th, ti, i + 1) / totalCasasPorRegion(th, i + 1)
+			}
+		}
+	}
 \end{proc}
 
 \aux{totalCasasPorRegion}{th: $eph_h$, r: \ent}{\ent}{
-	\sum_{h\in th}\IfThenElse{h[@iv1]=1 \wedge h[@region] = r}{1}{0}
+	\sum_{h\in th}\IfThenElse{esCasa(h) \wedge h[@region] = r}{1}{0}
 }
 
 \aux{totalCasasCriticasPorRegion}{th: $eph_h$, ti: $eph_i$, r: \ent}{\ent}{
-	\sum_{h\in th}\IfThenElse{esCasaCritica(h, ti) \wedge h[@region] = r}{1}{0}
+	\bloque{+2em}{
+		\sum_{h\in th}\IfThenElse{esCasaCritica(h, ti) \wedge h[@region] = r}{1}{0}
+	}
 }
 
 \pred{esCasaCritica}{h: hogar, ti: $eph_i$}{
-	h[@iv1]=1 \wedge esHacinamientoCritico(h, ti) \wedge h[@mas500] = 0
+	esCasa(h) \wedge esHacinamientoCritico(h, ti) \wedge \neg estaEnGranAglomerado(h)
 }
 
 \pred{esHacinamientoCritico}{h: hogar, ti: $eph_i$}{
-	\#personasEnHogar(h, ti) / h[@ii2] > 3
+	\#personasEnHogar(ti, h) / h[@ii2] > 3
 }
 
-\aux{\#personasEnHogar}{h: hogar, ti: $eph_i$}{\ent}{
-	\sum_{i\in ti} \IfThenElse{i[@indCodusu] = h[@hogCodusu]}{1}{0}
-}
+\pred{estaEnGranAglomerado}{h: hogar}{h[@mas500] = 1}
 
 \end{document}
 
