@@ -127,7 +127,8 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 	todosHogaresConMasHabitacionesQueDormitorios(th) \wedge\\
 	% Listo
 	todosAtributosEnRango(th, ti) \wedge\\
-	atributosValidos(th, ti)
+	atributosValidos(th, ti)\\
+	/*falta ver que si o si que ninguna region este vacia de hogares */
 }
 
 \pred{esMatriz}{s: \matriz{dato}}{
@@ -239,7 +240,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 \subsection{Ejercicio 2}
 
 \begin{proc}{histHabitacional}{\In th: $eph_h$, \In ti: $eph_i$, \In region: \ent, \Out res: \TLista{\ent}}{}
-	\pre{ encuestaValida(th, ti) }
+	\pre{ encuestaValida(th, ti) \wedge 1\leq region\leq 6 /*falta ver que si o si que la region tenga al menos una casa*/}
 	\post{ longitudDeHistograma(th, res) \yLuego
 		\bloque{+6em}{
 			(\forall{i: \ent})
@@ -256,35 +257,36 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 
 \pred{longitudDeHistograma}{th: $eph_h$, res: \TLista{\ent}}{
 	\existe{h}{hogar}{
-		h\in th \wedge\\ \paraTodo{g}{hogar}{
-			g\in th \implica \#habitaciones(h)\geq \#habitaciones(g)
-		} \wedge\\ \#habitaciones(h) = |res|}
+		h\in th \wedge esCasa(h) \wedge\\ \paraTodo{g}{hogar}{
+			(g\in th \wedge esCasa(g)) \implica \#habitaciones(h)\geq \#habitaciones(g)
+		} \wedge\\
+		\#habitaciones(h) = |res|}
 }
 
 \subsection{Ejercicio 3}
 
 \begin{proc}{laCasaEstaQuedandoChica}{\In th: $eph_h$, \In ti: $eph_i$, \Out res: \TLista{\float}}{}
-	\pre{ encuestaValida(th, ti) }
+	\pre{ encuestaValida(th, ti) \yLuego \neg(\exists{reg: \ent})(1\leq region\leq 6 \wedge regionVaciaDeCasas(th,reg)})
 	\post{ |res| = 6 \yLuego
 		\bloque{+6em}{
 			\paraTodo{i}{\ent}{
 				0 \leq i < |res| \implicaLuego ( \bloque{+2em}{
-					0\leq res[i]\leq 1 \wedge\\ res[i] = \IfThenElse{regionVacia(th,i+1)}{0\\}{\bloque{+2em}{totalCasasCriticasPorRegion(th, ti, i + 1) / totalCasasPorRegion(th, i + 1)}}
+					0\leq res[i]\leq 1 \wedge\\ res[i] = \#casasCriticasPorRegion(th, ti, i + 1) / \#casasPorRegion(th, i + 1)
 				})
 			}
 		}
 	}
 \end{proc}
 
-\aux{regionVacia}{th: $eph_h$, r: \ent}{\ent}{
-	totalCasasPorRegion(th, r) = 0
+\pred{regionVaciaDeCasas}{th: $eph_h$, r: \ent}{
+	\#casasPorRegion(th, r) = 0
 }
 
-\aux{totalCasasPorRegion}{th: $eph_h$, r: \ent}{\ent}{
+\aux{\#casasPorRegion}{th: $eph_h$, r: \ent}{\ent}{
 	\sum_{h\in th}\IfThenElse{esCasa(h) \wedge h[@region] = r}{1}{0}
 }
 
-\aux{totalCasasCriticasPorRegion}{th: $eph_h$, ti: $eph_i$, r: \ent}{\ent}{
+\aux{\#casasCriticasPorRegion}{th: $eph_h$, ti: $eph_i$, r: \ent}{\ent}{
 	\bloque{+2em}{
 		\sum_{h\in th}\IfThenElse{esCasaCritica(h, ti) \wedge h[@region] = r}{1}{0}
 	}
