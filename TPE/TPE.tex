@@ -243,12 +243,16 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 	\post{ longitudDeHistograma(th, res) \yLuego
 		\bloque{+6em}{
 			(\forall{i: \ent})
-			(0\leq i < |res| \implicaLuego res[i] =	\#casaConNHabitaciones(th, i + 1))
+			(0\leq i < |res| \implicaLuego res[i] =	\#casaConNHabitacionesEnRegion(th, i + 1, region))
 		}
 	}
 \end{proc}
 
-\aux{\#casaConNHabitaciones}{th: $eph_h$, n: \ent}{\ent}{\sum_{h\in th}\IfThenElse{esCasa(h) \wedge \#habitaciones(h) = n}{1}{0}}
+\aux{\#casaConNHabitacionesEnRegion}{th: $eph_h$, n: \ent, r: dato}{\ent}{
+	\bloque{+2em}{
+		\sum_{h\in th}\IfThenElse{esCasa(h) \wedge \#habitaciones(h) = n \wedge h[@region]=r}{1}{0}
+	}
+}
 
 \pred{longitudDeHistograma}{th: $eph_h$, res: \TLista{\ent}}{
 	\existe{h}{hogar}{
@@ -264,12 +268,17 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 	\post{ |res| = 6 \yLuego
 		\bloque{+6em}{
 			\paraTodo{i}{\ent}{
-				0 \leq i < |res| \implicaLuego\\ res[i] =
-				totalCasasCriticasPorRegion(th, ti, i + 1) / totalCasasPorRegion(th, i + 1)
+				0 \leq i < |res| \implicaLuego ( \bloque{+2em}{
+					0\leq res[i]\leq 1 \wedge\\ res[i] = \IfThenElse{regionVacia(th,i+1)}{0\\}{\bloque{+2em}{totalCasasCriticasPorRegion(th, ti, i + 1) / totalCasasPorRegion(th, i + 1)}}
+				})
 			}
 		}
 	}
 \end{proc}
+
+\aux{regionVacia}{th: $eph_h$, r: \ent}{\ent}{
+	totalCasasPorRegion(th, r) = 0
+}
 
 \aux{totalCasasPorRegion}{th: $eph_h$, r: \ent}{\ent}{
 	\sum_{h\in th}\IfThenElse{esCasa(h) \wedge h[@region] = r}{1}{0}
