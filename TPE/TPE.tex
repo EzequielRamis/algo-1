@@ -88,6 +88,8 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 
 \aux{\#habitaciones}{h: hogar}{dato}{h[@iv2]}
 
+\aux{\#dormitorios}{h: hogar}{dato}{h[@ii2]}
+
 \aux{\#personasEnHogar}{ti: $eph_i$, h: hogar}{\ent}{
 	\sum_{i\in ti} \IfThenElse{personaEnHogar(i, h)}{1}{0}
 }
@@ -204,7 +206,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 }
 
 \pred{todosHogaresConMasHabitacionesQueDormitorios}{th: $eph_h$}{
-	\neg \existe{h}{hogar}{\#habitaciones(h) < h[@ii2]}
+	\paraTodo{h}{hogar}{h\in th \implica \#habitaciones(h) \geq \#dormitorios(h)}
 }
 
 \pred{todosAtributosEnRango}{th: $eph_h$, ti:
@@ -296,7 +298,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 }
 
 \pred{esHacinamientoCritico}{h: hogar, ti: $eph_i$}{
-	\#personasEnHogar(ti, h) / h[@ii2] > 3
+	\#personasEnHogar(ti, h) / \#dormitorios(h) > 3
 }
 
 \pred{estaEnGranAglomerado}{h: hogar}{h[@mas500] = 1}
@@ -325,7 +327,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 
 \aux{\#personasTrabajandoADistanciaEnCiudadesGrandes}{th: $eph_h$, ti: $eph_i$}{\ent}{
 	\bloque{+2em}{
-		\sum_{i\in ti}\IfThenElse{viveEnDeptoOCasaEnCiudadGrande(i, th) \wedge trabajaADistancia(i)}{1}{0}
+		\sum_{i\in ti}\IfThenElse{viveEnHogarAptoParaTeleworking(i, th) \wedge trabajaADistancia(i)}{1}{0}
 	}
 }
 
@@ -335,9 +337,10 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 	}
 }
 
-\pred{viveEnDeptoOCasaEnCiudadGrande}{i: individuo, th: $eph_h$}{
+\pred{viveEnHogarAptoParaTeleworking}{i: individuo, th: $eph_h$}{
 	\existe{h}{hogar}{
-		h\in th \wedge\\ personaEnHogar(i, h) \wedge h[@mas500] = 1 \wedge (h[@iv1] = 1 \vee h[@iv1] = 2)
+		h\in th \wedge\\ personaEnHogar(i, h) \wedge h[@mas500] = 1 \wedge
+		h[@ii3] = 1 \wedge (h[@iv1] = 1 \vee h[@iv1] = 2)
 	}
 }
 
@@ -352,7 +355,18 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 \pred{viveEnCiudadGrande}{i: individuo, th: $eph_h$}{
 	\existe{h}{hogar}{
 		h\in th \wedge\\ personaEnHogar(i, h) \wedge h[@mas500] = 1
-	}}
+	}
+}
 
+\subsection{Ejercicio 5}
+
+\begin{proc}{costoSubsidioMejora}{\In th: $eph_h$, \In ti: $eph_i$, \In monto: \ent, \Out res: \ent}{}
+	\pre{ encuestaValida(th, ti) \wedge monto > 0 }
+	\post{ res = \sum_{h\in th}\IfThenElse{esHogarSubsidiado(h, ti)}{monto}{0} }
+\end{proc}
+
+\pred{esHogarSubsidiado}{h: hogar, ti: $eph_i$}{
+	esCasa(h) \wedge h[@ii7] = 1 \wedge \#dormitorios(h) < \#personasEnHogar(ti,h) - 2
+}
 \end{document}
 
