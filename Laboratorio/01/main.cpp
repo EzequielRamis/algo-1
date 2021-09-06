@@ -8,12 +8,15 @@ int main()
     while (!q)
     {
         int n;
-        cout << "Ingrese número: ";
+        int k;
+        cout << "Ingrese número n: ";
         cin >> n;
-        if (n < 0)
+        cout << "Ingrese número k: ";
+        cin >> k;
+        if (n < 0 || k < 0)
             q = true;
         else
-            cout << sumaDivisores(n) << endl;
+            cout << combinatoria_(n, k) << endl;
     }
     return 0;
 }
@@ -83,4 +86,31 @@ int sumaDivisores_(int n)
         if (n % i == 0)
             sum += i;
     return sum;
+}
+
+// Ejercicio 8
+int combinatoria(int n, int k)
+{
+    if (k == 0)
+        return 1;
+    if (n == 0)
+        return 0;
+    return combinatoria(n - 1, k) + combinatoria(n - 1, k - 1);
+}
+
+int factorial(int n)
+{
+    if (n == 0)
+        return 1;
+    int fac = n;
+    for (int i = n - 1; i > 1; i--)
+        fac *= i;
+    return fac;
+}
+
+int combinatoria_(int n, int k)
+{
+    if (k > n)
+        return 0;
+    return factorial(n) / (factorial(k) * (factorial(n - k)));
 }
