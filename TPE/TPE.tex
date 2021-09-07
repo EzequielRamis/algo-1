@@ -2,6 +2,7 @@
 
 \input{Algo1Macros.tex}
 \usepackage{caratula}
+\usepackage[hidelinks]{hyperref}
 
 \newcommand{\br}{\hfill\break}
 \newcommand{\bloque}[2]{
@@ -232,7 +233,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 	\paraTodo{h}{hogar}{
 		1800\leq h[@hogA \tilde n o] \wedge \\ 1\leq
 		h[@hogTrimestre]\leq 4 \wedge \\ 1\leq \#habitaciones(h) \wedge
-		\\ 1\leq h[@ii2]
+		\\ 1\leq \#dormitorios(h)
 	}\wedge\\
 	\paraTodo {i}{individuo}{
 		1\leq i[@componente] \wedge \\ 1800\leq
