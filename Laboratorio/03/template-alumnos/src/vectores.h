@@ -3,8 +3,12 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
+#include <fstream>
 
 using namespace std;
+
+const string ARCHIVOS = "../archivos/";
 
 void holaModuloVectores();
 
@@ -35,5 +39,21 @@ void mostrarVector(vector<int> v);
 // Ejemplo: si el vector es <1, 2, 5, 65> se debe mostrar en pantalla [1, 2, 5, 65]
 
 // Y aca van todos los otros headers de los ejercicios del laboratorio
+
+vector<int> leerVector(string nombreArchivo);
+
+void guardarVector(vector<int> v, string nombreArchivo);
+
+int elementoMedio(vector<int> v);
+
+void cantApariciones(string nombreArchivo);
+
+void cantAparicionesDePalabra(string nombreArchivo, string palabra);
+
+void promedio(string nombreArchivoIn1, string nombreArchivoIn2, string nombreArchivoOut);
+
+void ordenarSecuencias(string nombreArchivoIn1, string nombreArchivoIn2, string nombreArchivoOut);
+
+vector<int> interseccion();
 
 #endif
