@@ -369,5 +369,46 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 \pred{esHogarSubsidiado}{h: hogar, ti: $eph_i$}{
 	esCasa(h) \wedge h[@ii7] = 1 \wedge \#dormitorios(h) < \#personasEnHogar(ti,h) - 2
 }
-\end{document}
 
+\subsection{Ejercicio 6}
+
+\begin{proc}{generarJoin}{\In th: $eph_h$, \In ti: $eph_i$, \Out junta: $joinHI$}{}
+	\pre{ encuestaValida(th, ti) }
+	\post{
+		(\forall hi: hogar\times individuo)(
+		\bloque{+6em}{hi\in junta \implica (\bloque{+2em}{
+				hi_0\in th \wedge hi_1\in ti \yLuego hi_0[@hogCodusu] = hi_1[@indCodusu]
+			})}
+	})
+\end{proc}
+
+\subsection{Ejercicio 7}
+
+\begin{proc}{ordenarRegionYTipo}{\Inout th: $eph_h$, \Inout ti: $eph_i$}{}
+	\pre{ encuestaValida(th, ti) \wedge th = TH_0 \wedge ti = TI_0 }
+	\post{
+		\bloque{+6em}{
+			|th| = |TH_0| \wedge |ti| = |TI_0| \yLuego\\
+			(\forall h: hogar)(h\in th \Iff h\in TH_0) \wedge\\
+			(\forall i: individuo)(i\in ti \Iff i\in TI_0) \wedge\\
+			hogaresOrdenados(th) \wedge individuosOrdenados(th, ti)
+		}
+	}
+\end{proc}
+
+\pred{hogaresOrdenados}{th: $eph_h$}{
+	(\forall i: \ent)
+	(0\leq i< |th| -1 \implicaLuego (\bloque{+2em}{ 
+		th[i][@region]\leq th[i+1][@region] \wedge\\
+		(th[i][@region] = th[i+1][@region] \implica th[i][@hogCodusu] < th[i+1][@hogCodusu])
+	})
+}
+
+\pred{individuosOrdenados}{th: $eph_h$, ti: $eph_i$}{
+	(\forall i: \ent)
+	(0\leq i< |ti| -1 \implicaLuego \bloque{+2em}{
+		ti[i][@indCodusu] = ti[i+1][@indCodusu] \implica ti[i][@componente]<ti[i+1][@componente]
+	})
+}
+
+\end{document}
