@@ -11,7 +11,7 @@ bool estaOrdenadoAsc(vector<int> v)
 {
   int i = 0;
   int longitud = v.size();
-  bool esMenor;
+  bool esMenor = true;
   while (i <= longitud - 2 && esMenor)
   {
     esMenor = v[i] <= v[i + 1];
@@ -24,7 +24,7 @@ bool estaOrdenadoDesc(vector<int> v)
 {
   int longitud = v.size();
   int i = 0;
-  bool esMayor;
+  bool esMayor = true;
   while (i <= longitud - 2 && esMayor)
   {
     esMayor = v[i] >= v[i + 1];
@@ -52,9 +52,11 @@ bool esPrimo(int numero)
   {
     int i = 2;
     bool divide = false;
-    while (i <= numero && !divide)
-      divide = numero % i != 0;
-    i++;
+    while (i < numero && !divide)
+    {
+      divide = numero % i == 0;
+      i++;
+    }
     return i == numero;
   }
   else if (numero == 2)
@@ -80,7 +82,7 @@ bool pertenece(int elemento, vector<int> v)
       sigo = v[i] != elemento;
       i++;
     }
-    return i < longitud;
+    return i < longitud || !sigo;
   }
 }
 
@@ -89,8 +91,10 @@ bool pertenece(int elemento, vector<int> v)
 // Encontrar el desvio estandar de un vector de floats.
 float promedio(vector<float> v)
 {
-  int longitud = v.size();
-  int suma = 0;
+  float longitud = v.size();
+  float suma = 0;
+  if (longitud == 0)
+    return 0;
   for (int i = 0; i <= longitud - 1; i++)
     suma += v[i];
   return suma / longitud;
@@ -101,8 +105,7 @@ float sumaDeCuadrados(vector<float> v)
   float sumadecuadrados = 0;
   unsigned int i;
   for (i = 0; i <= v.size() - 1; i++)
-    ;
-  sumadecuadrados += pow((v[i] - promedio(v)), 2);
+    sumadecuadrados += pow((v[i] - promedio(v)), 2);
   return sumadecuadrados;
 }
 
@@ -116,9 +119,9 @@ float desvioEstandar(vector<float> v)
 // Calcular el k-esimo numero de fibonacci
 long fibonacci(int k)
 {
-  if (k = 0)
+  if (k == 0)
     return 0;
-  else if (k = 1)
+  else if (k == 1)
     return 1;
   else
   {
@@ -168,13 +171,13 @@ int maximoComunDivisor(int x, int y)
   int a = maximo(x, y);
   int b = minimo(x, y);
   int resto;
-  while ((b != 0) || (b != 1))
+  while ((b != 0) && (b != 1))
   {
     resto = a % b;
-    b = a;
-    a = resto;
+    a = b;
+    b = resto;
   }
-  if (a == 0)
+  if (b == 0)
     return a;
   else
     return 1;
@@ -189,8 +192,7 @@ int sumaDoble(vector<int> v)
   for (unsigned int i = 0; i < v.size(); i++)
   {
     if (v[i] % 2 == 0 && v[i] >= 0)
-      suma = +v[i] * 2;
-    i++;
+      suma += v[i] * 2;
   }
   return suma;
 }
@@ -207,7 +209,7 @@ int cantPalabras(string filename)
   miArchivo.open(filename.c_str(), ifstream::in);
   if (miArchivo.is_open())
   {
-    while (miArchivo.eof())
+    while (!miArchivo.eof())
     {
       miArchivo >> palabra;
       cont++;
@@ -229,7 +231,7 @@ float valorMedio()
   ifstream miArchivo;
   float val;
   float acum = 0;
-  int cont = 0;
+  float cont = 0;
 
   miArchivo.open("datos/SensadoRemoto.txt", ifstream::in);
   if (miArchivo.is_open())
@@ -247,9 +249,10 @@ float valorMedio()
 }
 
 // Devolver en res la fraccion (entre 0 y 1) de numeros mayores a 0.
-void fraccion(vector<int> v, float res)
+void fraccion(vector<int> v, float &res)
 {
-  int count = 0;
+  float count = 0;
+  float len = v.size();
   for (int i = 0; i < v.size(); i++)
   {
     if (v[i] > 0)
@@ -257,5 +260,9 @@ void fraccion(vector<int> v, float res)
       count++;
     }
   }
-  res = count / v.size();
+  if (len == 0)
+    res = 0;
+  else
+    res = count / len;
+  return;
 }
