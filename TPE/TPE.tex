@@ -398,17 +398,93 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 
 \pred{hogaresOrdenados}{th: $eph_h$}{
 	(\forall i: \ent)
-	(0\leq i< |th| -1 \implicaLuego (\bloque{+2em}{ 
+	(0\leq i< |th| -1 \implicaLuego (\bloque{+2em}{
 		th[i][@region]\leq th[i+1][@region] \wedge\\
 		(th[i][@region] = th[i+1][@region] \implica th[i][@hogCodusu] < th[i+1][@hogCodusu])
 	})
 }
 
-\pred{individuosOrdenados}{th: $eph_h$, ti: $eph_i$}{
-	(\forall i: \ent)
-	(0\leq i< |ti| -1 \implicaLuego \bloque{+2em}{
-		ti[i][@indCodusu] = ti[i+1][@indCodusu] \implica ti[i][@componente]<ti[i+1][@componente]
-	})
+/* Falta punto 1) */\\
+\pred{individuosOrdenados}{th: $eph_h$, ti:
+$eph_i$}{
+(\forall i: \ent)
+(0\leq i< |ti| -1 \implicaLuego
+\bloque{+2em}{
+ti[i][@indCodusu] = ti[i+1][@indCodusu] \implica
+ti[i][@componente]<ti[i+1][@componente]
+})
 }
+
+\subsection{Ejercicio 8}
+
+\begin{proc}{muestraHomogenea}{\In th: $eph_h$, \In ti: $eph_i$, \Out res: \TLista{hogar}}{}
+	\pre{ encuestaValida(th, ti) }
+	\post{  \existe{s}{\TLista{hogar}}{
+		\bloque{+6em}{
+		esHomogenea(s, th, ti) \wedge\\
+		(\forall t: \TLista{hogar})(esHomogenea(t, th, ti) \implica |s| \geq |t|) \wedge (
+		\bloque{+2em}{
+			(
+				|s| < 3 \implica res = <>
+			) \wedge\\
+			(
+				|s| \geq 3 \implica res = s
+			)
+		})
+		}}
+	}
+\end{proc}
+
+\pred{esHomogenea}{s: \TLista{hogar}, th: $eph_h$, ti: $eph_i$}{
+	mismaDiferencia(s) \wedge ordenadaPorIngresos(s,ti) \wedge (\forall h: $hogar$)(h\in s \implica h\in th)
+}
+
+\pred{mismaDiferencia}{s: \TLista{hogar}}{
+	(\forall i: \ent) (1\leq i < |s| - 1 \implicaLuego diferenciaDeIngresos(s[i], s[i-1], ti) = diferenciaDeIngresos(s[i], s[i+1], ti))
+}
+
+\pred{ordenadaPorIngresos}{s: \TLista{hogar}, ti: $eph_i$} {
+	(\forall i: \ent)(
+	0\leq i < |s| - 1 \implicaLuego
+	ingresosEnHogar(s[i], ti) \leq ingresosEnHogar(s[i+1], ti)
+	)
+}
+
+\aux{diferenciaDeIngresos}{a,b: $hogar$, ti: $eph_i$}{\ent}{
+	|ingresosEnHogar(a, ti) - ingresosEnHogar(b, ti)|
+}
+
+\aux{ingresosEnHogar}{h: $hogar$, ti: $eph_i$}{\ent}{
+	\bloque{+2em}{
+		\sum_{i=0}^{|ti|-1}\IfThenElse{personaEnHogar(ti[i], h) \wedge ti[i][@p47T] \neq -1}{ti[i][@p47T]}{0}
+	}
+}
+
+\subsection{Ejercicio 9}
+
+\begin{proc}{corregirRegion}{\Inout th: $eph_h$, \In ti: $eph_i$}{}
+	\pre{ encuestaValida(th, ti) \wedge th = TH_0 }
+	\post{ |th|=|TH_0| \yLuego (\forall i: \ent)(
+		0\leq i < |th| \implicaLuego \bloque{+6em}{
+			(TH_0[i][@region]=1 \implica 
+				\bloque{+2em}{
+					th[i][@region]=5 \wedge\\
+					th[i][@hogCodusu]=TH_0[i][@hogCodusu] \wedge\\
+					th[i][@hogA\tilde no]=TH_0[i][@hogA\tilde no] \wedge\\
+					th[i][@hogTrimestre]=TH_0[i][@hogTrimestre] \wedge\\
+					th[i][@hogLatitud]=TH_0[i][@hogLatitud] \wedge\\
+					th[i][@hogLongitud]=TH_0[i][@hogLongitud] \wedge\\
+					th[i][@ii7]=TH_0[i][@ii7] \wedge\\
+					th[i][@mas500]=TH_0[i][@mas500] \wedge\\
+					th[i][iv1]=TH_0[i][iv1] \wedge\\
+					th[i][@iv2]=TH_0[i][@iv2] \wedge\\
+					th[i][@ii2]=TH_0[i][@ii2] \wedge\\
+					th[i][@ii3]=TH_0[i][@ii3]
+				}
+			)\wedge\\
+			(TH_0[i][@region]\neq1 \implica th[i]=TH_0[i])
+	}
+	 ) }
+\end{proc}
 
 \end{document}
