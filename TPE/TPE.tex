@@ -385,12 +385,12 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 \subsection{Ejercicio 7}
 
 \begin{proc}{ordenarRegionYTipo}{\Inout th: $eph_h$, \Inout ti: $eph_i$}{}
-	\pre{ encuestaValida(th, ti) \wedge th = TH_0 \wedge ti = TI_0 }
+	\pre{ encuestaValida(th, ti) \wedge th = TH \wedge ti = TI }
 	\post{
 		\bloque{+6em}{
-			|th| = |TH_0| \wedge |ti| = |TI_0| \yLuego\\
-			(\forall h: hogar)(h\in th \Iff h\in TH_0) \wedge\\
-			(\forall i: individuo)(i\in ti \Iff i\in TI_0) \wedge\\
+			|th| = |TH| \wedge |ti| = |TI| \yLuego\\
+			(\forall h: hogar)(h\in th \Iff h\in TH) \wedge\\
+			(\forall i: individuo)(i\in ti \Iff i\in TI) \wedge\\
 			hogaresOrdenados(th) \wedge individuosOrdenados(th, ti)
 		}
 	}
@@ -420,18 +420,18 @@ ti[i][@componente]<ti[i+1][@componente]
 \begin{proc}{muestraHomogenea}{\In th: $eph_h$, \In ti: $eph_i$, \Out res: \TLista{hogar}}{}
 	\pre{ encuestaValida(th, ti) }
 	\post{  \existe{s}{\TLista{hogar}}{
-		\bloque{+6em}{
-		esHomogenea(s, th, ti) \wedge\\
-		(\forall t: \TLista{hogar})(esHomogenea(t, th, ti) \implica |s| \geq |t|) \wedge (
-		\bloque{+2em}{
-			(
-				|s| < 3 \implica res = <>
-			) \wedge\\
-			(
-				|s| \geq 3 \implica res = s
-			)
-		})
-		}}
+			\bloque{+6em}{
+				esHomogenea(s, th, ti) \wedge\\
+				(\forall t: \TLista{hogar})(esHomogenea(t, th, ti) \implica |s| \geq |t|) \wedge (
+				\bloque{+2em}{
+					(
+					|s| < 3 \implica res = <>
+					) \wedge\\
+					(
+					|s| \geq 3 \implica res = s
+					)
+				})
+			}}
 	}
 \end{proc}
 
@@ -463,28 +463,77 @@ ti[i][@componente]<ti[i+1][@componente]
 \subsection{Ejercicio 9}
 
 \begin{proc}{corregirRegion}{\Inout th: $eph_h$, \In ti: $eph_i$}{}
-	\pre{ encuestaValida(th, ti) \wedge th = TH_0 }
-	\post{ |th|=|TH_0| \yLuego (\forall i: \ent)(
-		0\leq i < |th| \implicaLuego \bloque{+6em}{
-			(TH_0[i][@region]=1 \implica 
-				\bloque{+2em}{
-					th[i][@region]=5 \wedge\\
-					th[i][@hogCodusu]=TH_0[i][@hogCodusu] \wedge\\
-					th[i][@hogA\tilde no]=TH_0[i][@hogA\tilde no] \wedge\\
-					th[i][@hogTrimestre]=TH_0[i][@hogTrimestre] \wedge\\
-					th[i][@hogLatitud]=TH_0[i][@hogLatitud] \wedge\\
-					th[i][@hogLongitud]=TH_0[i][@hogLongitud] \wedge\\
-					th[i][@ii7]=TH_0[i][@ii7] \wedge\\
-					th[i][@mas500]=TH_0[i][@mas500] \wedge\\
-					th[i][iv1]=TH_0[i][iv1] \wedge\\
-					th[i][@iv2]=TH_0[i][@iv2] \wedge\\
-					th[i][@ii2]=TH_0[i][@ii2] \wedge\\
-					th[i][@ii3]=TH_0[i][@ii3]
-				}
-			)\wedge\\
-			(TH_0[i][@region]\neq1 \implica th[i]=TH_0[i])
-	}
-	 ) }
+	\pre{ encuestaValida(th, ti) \wedge th = TH }
+	\post{ |th|=|TH| \yLuego (\forall i: \ent)(
+	0\leq i < |th| \implicaLuego \bloque{+6em}{ (TH[i][@region]=1 \implica
+	\bloque{+2em}{ th[i][@region]=5 \wedge\\
+	th[i][@hogCodusu]=TH[i][@hogCodusu] \wedge\\
+	th[i][@hogA\tilde no]=TH[i][@hogA\tilde no] \wedge\\
+	th[i][@hogTrimestre]=TH[i][@hogTrimestre] \wedge\\
+	th[i][@hogLatitud]=TH[i][@hogLatitud] \wedge\\
+	th[i][@hogLongitud]=TH[i][@hogLongitud] \wedge\\
+	th[i][@ii7]=TH[i][@ii7] \wedge\\
+	th[i][@mas500]=TH[i][@mas500] \wedge\\
+	th[i][iv1]=TH[i][iv1] \wedge\\
+	th[i][@iv2]=TH[i][@iv2] \wedge\\
+	th[i][@ii2]=TH[i][@ii2] \wedge\\
+	th[i][@ii3]=TH[i][@ii3] } )\wedge\\ (TH[i][@region]\neq1
+	\implica th[i]=TH[i]) } ) }
 \end{proc}
+
+\subsection{Ejercicio 10}
+
+\begin{proc}{histogramaDeAnillosConcentricos}{\In th: $eph_h$, \In centro: \ent\times\ent, \In distancias: \TLista{\ent}, \Out result: \TLista{\ent}}{}
+	\pre{\bloque{+6em}{|distancias| > 0 \wedge\\
+			(\forall i: \ent)(0\leq i < |distancias| - 1 \implicaLuego 0 < distancias[i] < distancias[i+1])}}
+	\post{ |result| = |distancias| \yLuego
+		\bloque{+6em}{
+			\paraTodo{i}{\ent}{
+				0\leq i < |result| \implicaLuego (\bloque{+2em}{
+					(i=0\implica res[i] = hogaresEnRadio(th, centro, -1, distancias[0]))\wedge\\
+					(i \neq 0\implica res[i] = hogaresEnRadio(th, centro, distancias[i-1], distancias[i]))} )
+			}
+		}
+	}
+\end{proc}
+
+\aux{hogaresEnRadio}{th: $eph_h$, centro: \ent\times\ent,
+	desde:\ent ,hasta:\ent}{\ent}{
+	\bloque{+2em}{\sum_{j=0}^{|th|-1}\IfThenElse{desde<distanciaEuclidiana(cent ro,(th[j][@hogLatitud], th[j][@hogLongitud])) \leq hasta}{1}{0}}
+}
+
+\aux{distanciaEuclidiana}{c1,c2: \ent\times\ent}{\float}{
+	\sqrt{(c2_0-c1_0)^2+(c2_1-c1_1)^2}
+}
+
+\subsection{Ejercicio 11}
+
+\begin{proc}{quitarIndividuos}{\Inout th: $eph_h$, \Inout ti: $eph_i$, \In busqueda: \TLista{ItemIndividuo\times dato}, \Out result: $eph_h$\times$eph_i$}{}
+	\pre{ encuestaValida(th, ti) \wedge busquedaValida(busqueda) \wedge th = TH \wedge ti = TI }
+	\post{ 0\leq |th|\leq |TH| \wedge 0\leq |ti|\leq |TI| \wedge |result| = |TI| - |ti| \yLuego
+		\bloque{+6em}{
+			\paraTodo{h}{hogar}{(h \in TH\wedge hogarLlenoDeCoincidentes(TI, h, busqueda))\Iff(h\in result_0 \wedge h \notin th)} \wedge \\
+			\paraTodo{i}{individuo}{(i \in TI\wedge coincideConTerminos(i, busqueda))\Iff(i\in result_1 \wedge i \notin ti)}
+		}
+	}
+\end{proc}
+
+\aux{\#personasEnHogarCoincidentes}{ti: $eph_i$, h: $hogar$, busqueda: \TLista{ItemIndividuo\times dato}}{\ent}{
+	\bloque{+2em}{\sum_{j=0}^{|ti|-1} \IfThenElse{personaEnHogar(ti[j], h)\wedge coincideConTerminos(ti[j], busqueda)}{1}{0}}
+}
+
+\pred{hogarLlenoDeCoincidentes}{ti: $eph_i$, h: $hogar$, busqueda: \TLista{ItemIndividuo\times dato}}{
+	\#personasEnHogar(ti,h) = \#personasEnHogarCoincidentes(ti,h,busqueda)
+}
+
+\pred{busquedaValida}{busqueda: \TLista{ItemIndividuo\times dato}}{
+	\paraTodo{b}{ItemIndividuo\times dato}{b\in busqueda \implica def(ord(b_0))} \yLuego\\
+	\neg\existe{i,j}{\ent}{0\leq i,j < |busqueda| \wedge i\neq j \yLuego
+		ord(busqueda[i]_0)=ord(busqueda[j]_0)}{}
+}
+
+\pred{coincideConTerminos}{i : individuo, busqueda: \TLista{ItemIndividuo\times dato} }{
+	\paraTodo{t}{\ent}{0\leq t < |busqueda| \implicaLuego i[ord(busqueda[t]_0)] = busqueda[t]_1}
+}
 
 \end{document}
