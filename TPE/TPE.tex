@@ -413,15 +413,24 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 	})
 }
 
-/* Falta punto 1) */\\
 \pred{individuosOrdenados}{th: $eph_h$, ti:
-$eph_i$}{
-(\forall i: \ent)
-(0\leq i< |ti| -1 \implicaLuego
-\bloque{+2em}{
-ti[i][@indCodusu] = ti[i+1][@indCodusu] \implica
-ti[i][@componente]<ti[i+1][@componente]
-})
+	$eph_i$}{
+	(\forall i: \ent)
+	(0\leq i< |ti| -1 \implicaLuego
+	\bloque{+2em}{
+		indicePorCodusu(th, ti[i][@indCodusu]) = indicePorCodusu(th, ti[i+1][@indCodusu])\implica (
+		\bloque{+2em}{ti[i][@indCodusu] = ti[i+1][@indCodusu] \wedge
+			ti[i][@componente]<ti[i+1][@componente]})\wedge\\
+		indicePorCodusu(th, ti[i][@indCodusu]) > indicePorCodusu(th, ti[i+1][@indCodusu])\implica (
+		\bloque{+2em}{ti[i][@indCodusu] > ti[i+1][@indCodusu]})\wedge\\
+		indicePorCodusu(th, ti[i][@indCodusu]) < indicePorCodusu(th, ti[i+1][@indCodusu])\implica (
+		\bloque{+2em}{ti[i][@indCodusu] < ti[i+1][@indCodusu]})
+	})
+}
+
+/* Asumo que la lista tiene elementos únicos, y que el elemento pertenece a la
+lista */\\ \aux{indicePorCodusu}{s: $eph_h$, e: $dato$}{\ent}{
+	\sum_{i=0}^{|s|-1}\IfThenElse{s[i][@hogCodusu]=e}{i}{0}
 }
 
 \subsection{Ejercicio 8}
