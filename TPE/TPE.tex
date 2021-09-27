@@ -92,7 +92,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 \aux{\#dormitorios}{h: hogar}{dato}{h[@ii2]}
 
 \aux{\#personasEnHogar}{ti: $eph_i$, h: hogar}{\ent}{
-	\sum_{i\in ti} \IfThenElse{personaEnHogar(i, h)}{1}{0}
+	\sum_{i = 0}^{|ti|-1} \IfThenElse{personaEnHogar(ti[i], h)}{1}{0}
 }
 
 \pred{esCasa}{h: hogar}{
@@ -119,9 +119,9 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 	% Listo
 	esMatriz(th) \wedge esMatriz(ti) \wedge\\
 	% Listo
-	|th| > 0 \wedge |ti| > 0 \wedge\\
+	|th| > 0 \wedge |ti| > 0 \yLuego\\
 	% Listo
-	esTablaCompleta(th, \#atributosHogar) \wedge esTablaCompleta(ti, \#atributosPersona) \wedge\\
+	esTablaCompleta(th, \#atributosHogar) \wedge esTablaCompleta(ti, \#atributosPersona) \yLuego\\
 	% Listo
 	\neg hayIndividuoSinHogar(th, ti) \wedge \neg hayHogarSinIndividuo(th, ti) \wedge\\
 	% Listo
@@ -152,9 +152,9 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 
 \pred{hayIndividuoSinHogar}{th: $eph_h$, ti: $eph_i$}{
 	\existe{i}{individuo}{
-		i\in ti \wedge \bloque{+1em}{
+		i\in ti \yLuego \bloque{+1em}{
 			\neg\existe{h}{hogar}{
-				h\in th \wedge personaEnHogar(i, h)
+				h\in th \yLuego personaEnHogar(i, h)
 			}
 		}
 	}
@@ -162,22 +162,22 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 
 \pred{hayHogarSinIndividuo}{th: $eph_h$, ti: $eph_i$}{
 	\existe{h}{hogar}{
-		h\in th \wedge \bloque{+1em}{
+		h\in th \yLuego \bloque{+1em}{
 			\neg\existe{i}{individuo}{
-				i\in ti \wedge personaEnHogar(i, h)
+				i\in ti \yLuego personaEnHogar(i, h)
 			}
 		}
 	}
 }
 
 \pred{hayIndividuoRepetido}{s: $eph_i$}{
-	\existe{a,b}{individuo}{(a\in s \wedge b\in s) \wedge
+	\existe{a,b}{individuo}{(a\in s \wedge b\in s \wedge a\neq b) \yLuego
 		a[@indCodusu] = b[@indCodusu] \wedge
 		a[@componente] = b[@componente]}
 }
 
 \pred{hayHogarRepetido}{s: $eph_h$}{
-	\existe{a,b}{hogar}{(a\in s \wedge b\in s) \wedge
+	\existe{a,b}{hogar}{(a\in s \wedge b\in s \wedge a\neq b) \yLuego
 		a[@hogCodusu] = b[@hogCodusu]}
 }
 
@@ -185,14 +185,16 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 	(|th| > 0 \wedge |ti| > 0) \implicaLuego
 	(\bloque{+2em}{
 		\paraTodo{h}{hogar}{
-			h\in th \implica (\bloque{+2em}{
+			h\in th \implicaLuego (\bloque{+2em}{
 				h[@hogA\tilde no] = head(h)[@hogA\tilde no] \wedge\\
 				hogaresConTrimestresIguales(h, head(th))
 			})
 		} \wedge\\
 		\paraTodo{i}{individuo}{
-			i\in ti \implica (\bloque{+2em}{
-				i[@indA\tilde n o] = head(th)[@hogA\tilde no] \wedge\\
+			i\in ti \implicaLuego (\bloque{+2em}{
+				i[@indA\tilde no] = head(ti)[@indA\tilde no] \wedge\\
+				i[@indTrimestre] = head(ti)[@indTrimestre] \wedge\\
+				i[@indA\tilde no] = head(th)[@hogA\tilde no] \wedge\\
 				i[@indTrimestre] = head(th)[@hogTrimestre]
 			})
 		}
@@ -202,26 +204,24 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 \pred{todosHogaresConMenosDe21Integrantes}{th: $eph_h$, ti:
 	$eph_i$}{
 	\paraTodo{h}{hogar}{
-		h\in th \implica 21 > \#personasEnHogar(ti, h)
+		h\in th \implicaLuego 21 > \#personasEnHogar(ti, h)
 	}
 }
 
 \pred{todosHogaresConMasHabitacionesQueDormitorios}{th: $eph_h$}{
-	\paraTodo{h}{hogar}{h\in th \implica \#habitaciones(h) \geq \#dormitorios(h)}
+	\paraTodo{h}{hogar}{h\in th \implicaLuego \#habitaciones(h) \geq \#dormitorios(h)}
 }
 
 \pred{todosAtributosEnRango}{th: $eph_h$, ti:
 	$eph_i$}{
-	\paraTodo{h}{hogar}{
-		1\leq h[@ii7]\leq 3 \wedge\\ 1\leq
-		h[@region]\leq 6 \wedge\\ 0\leq
+	\paraTodo{h}{hogar}{ h \in th \implicaLuego\\ 1\leq h[@ii7]\leq 3 \wedge\\
+		1\leq h[@region]\leq 6 \wedge\\ 0\leq
 		h[@mas500]\leq 1\wedge\\ 1\leq
 		h[@iv1]\leq 5\wedge\\ 1\leq
 		h[@ii3]\leq 2
 	}\wedge\\
-	\paraTodo {i}{individuo}{
-		1\leq i[@ch4]\leq 2 \wedge\\ 0\leq
-		i[@nivelEd]\leq 1 \wedge\\ -1\leq
+	\paraTodo {i}{individuo}{ i\in ti \implicaLuego\\ 1\leq i[@ch4]\leq 2 \wedge\\
+		0\leq i[@nivelEd]\leq 1 \wedge\\ -1\leq
 		i[@estado]\leq 1 \wedge\\ 0\leq
 		i[@catOcup]\leq 4 \wedge\\ 1\leq
 		i[@pp04g]\leq 10 \wedge \\ -1\leq
@@ -230,13 +230,13 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 }
 
 \pred{atributosValidos}{th: $eph_h$, ti: $eph_i$}{
-	\paraTodo{h}{hogar}{
-		1800\leq h[@hogA \tilde n o] \wedge \\ 1\leq
+	\paraTodo{h}{hogar}{ h \in th \implicaLuego\\ 0 < h[@hogCodusu] \wedge\\ 1800\leq
+		h[@hogA \tilde n o] \wedge \\ 1\leq
 		h[@hogTrimestre]\leq 4 \wedge \\ 1\leq \#habitaciones(h) \wedge
 		\\ 1\leq \#dormitorios(h)
 	}\wedge\\
-	\paraTodo {i}{individuo}{
-		1\leq i[@componente] \wedge \\ 1800\leq
+	\paraTodo {i}{individuo}{ i \in ti \implicaLuego\\ 0 < i[@indCodusu] \wedge \\ 1\leq
+		i[@componente] \wedge \\ 1800\leq
 		i[@indA\tilde n o] \wedge \\ 1\leq
 		i[@indTrimestre]\leq 4 \wedge \\ 0\leq
 		i[@ch6]
@@ -246,8 +246,8 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 \subsection{Ejercicio 2}
 
 \begin{proc}{histHabitacional}{\In th: $eph_h$, \In ti: $eph_i$, \In region: \ent, \Out res: \TLista{\ent}}{}
-	\pre{ encuestaValida(th, ti) \wedge 1\leq region\leq 6 \wedge (\exists{h: hogar})(h\in th \wedge h[@region] = region \wedge esCasa(h))}
-	\post{ longitudDeHistograma(th, res) \yLuego
+	\pre{ encuestaValida(th, ti) \wedge 1\leq region\leq 6 }
+	\post{ longitudDeHistograma(th, region, res) \wedge
 		\bloque{+6em}{
 			(\forall{i: \ent})
 			(0\leq i < |res| \implicaLuego res[i] =	\#casaConNHabitacionesEnRegion(th, i + 1, region))
@@ -257,27 +257,31 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 
 \aux{\#casaConNHabitacionesEnRegion}{th: $eph_h$, n: \ent, r: dato}{\ent}{
 	\bloque{+2em}{
-		\sum_{h\in th}\IfThenElse{esCasa(h) \wedge \#habitaciones(h) = n \wedge h[@region]=r}{1}{0}
+		\sum_{i=0}^{|th|-1}\IfThenElse{esCasa(th[i]) \wedge
+			\#habitaciones(th[i]) = n \wedge
+			th[i][@region]=r}{1}{0}
 	}
 }
 
-\pred{longitudDeHistograma}{th: $eph_h$, res: \TLista{\ent}}{
+\pred{longitudDeHistograma}{th: $eph_h$, r: \ent, res: \TLista{\ent}}{
 	\existe{h}{hogar}{
-		h\in th \wedge esCasa(h) \wedge\\ \paraTodo{g}{hogar}{
-			(g\in th \wedge esCasa(g)) \implica \#habitaciones(h)\geq \#habitaciones(g)
-		} \wedge\\
-		\#habitaciones(h) = |res|}
+		h\in th \yLuego esCasa(h) \wedge h[@region]=r \wedge\\
+		\paraTodo{g}{hogar}{
+			(g\in th \yLuego esCasa(g) \wedge g[@region]=r) \implica
+			\#habitaciones(h)\geq \#habitaciones(g)
+		} \wedge\\ \#habitaciones(h) = |res|}
 }
 
 \subsection{Ejercicio 3}
 
 \begin{proc}{laCasaEstaQuedandoChica}{\In th: $eph_h$, \In ti: $eph_i$, \Out res: \TLista{\float}}{}
-	\pre{ encuestaValida(th, ti) \yLuego (\forall{reg: \ent})(1\leq reg\leq 6 \implicaLuego\#casasPorRegion(th, reg)>0)}
+	\pre{ encuestaValida(th, ti)}
 	\post{ |res| = 6 \yLuego
 		\bloque{+6em}{
 			\paraTodo{i}{\ent}{
 				0 \leq i < |res| \implicaLuego ( \bloque{+2em}{
-					0\leq res[i]\leq 1 \wedge\\ res[i] = \#casasCriticasPorRegion(th, ti, i + 1) / \#casasPorRegion(th, i + 1)
+					(\#casasPorRegion(th, i + 1) \neq 0\implica\bloque{+2em}{res[i] = \#casasCriticasPorRegion(th, ti, i + 1) / \#casasPorRegion(th, i + 1)}) \wedge\\
+					(\#casasPorRegion(th, i + 1) = 0 \implica res[i] = 0)
 				})
 			}
 		}
@@ -285,12 +289,13 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 \end{proc}
 
 \aux{\#casasPorRegion}{th: $eph_h$, r: \ent}{\ent}{
-	\sum_{h\in th}\IfThenElse{esCasa(h) \wedge h[@region] = r}{1}{0}
+	\bloque{+2em}{\sum_{i=0}^{|th|-1}\IfThenElse{esCasa(th[i]) \wedge th[i][@region] =
+			r \wedge \neg estaEnGranAglomerado(th[i])}{1}{0}}
 }
 
 \aux{\#casasCriticasPorRegion}{th: $eph_h$, ti: $eph_i$, r: \ent}{\ent}{
 	\bloque{+2em}{
-		\sum_{h\in th}\IfThenElse{esCasaCritica(h, ti) \wedge h[@region] = r}{1}{0}
+		\sum_{i=0}^{|th|-1}\IfThenElse{esCasaCritica(th[i], ti) \wedge th[i][@region] = r}{1}{0}
 	}
 }
 
@@ -321,28 +326,32 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 }
 
 \aux{teleworkingEnCiudadesGrandes}{th: $eph_h$, ti: $eph_i$}{\float}{
-	\bloque{+2em}{
-		\#personasTrabajandoADistanciaEnCiudadesGrandes(th, ti)/\#personasTrabajandoEnCiudadesGrandes(th, ti)
+	\bloque{+1em}{
+		\IfThenElse{\#personasTrabajandoEnCiudadesGrandes(th, ti) \neq 0}{\bloque{+0em}{\#personasTrabajandoADistanciaEnCiudadesGrandes(th, ti)/\#personasTrabajandoEnCiudadesGrandes(th, ti)}}{0}
 	}
 }
 
 \aux{\#personasTrabajandoADistanciaEnCiudadesGrandes}{th: $eph_h$, ti: $eph_i$}{\ent}{
 	\bloque{+2em}{
-		\sum_{i\in ti}\IfThenElse{viveEnHogarAptoParaTeleworking(i, th) \wedge trabajaADistancia(i)}{1}{0}
+		\sum_{i=0}^{|ti|-1}\IfThenElse{viveEnHogarAptoParaTeleworking(ti[i], th) \wedge trabajaADistancia(ti[i])}{1}{0}
 	}
 }
 
 \aux{\#personasTrabajandoEnCiudadesGrandes}{th: $eph_h$, ti: $eph_i$}{\ent}{
 	\bloque{+2em}{
-		\sum_{i\in ti}\IfThenElse{viveEnCiudadGrande(i, th) \wedge trabaja(i)}{1}{0}
+		\sum_{i=0}^{|ti|-1}\IfThenElse{viveEnCiudadGrande(ti[i], th) \wedge trabaja(ti[i])}{1}{0}
 	}
 }
 
 \pred{viveEnHogarAptoParaTeleworking}{i: individuo, th: $eph_h$}{
 	\existe{h}{hogar}{
-		h\in th \wedge\\ personaEnHogar(i, h) \wedge h[@mas500] = 1 \wedge
-		h[@ii3] = 1 \wedge (h[@iv1] = 1 \vee h[@iv1] = 2)
+		h\in th \yLuego\\ personaEnHogar(i, h)  \wedge esCasaODepto(h) \wedge h[@mas500] = 1 \wedge
+		h[@ii3] = 1
 	}
+}
+
+\pred{esCasaODepto}{h: $hogar$}{
+	h[@iv1] = 1 \vee h[@iv1] = 2
 }
 
 \pred{trabajaADistancia}{i: individuo}{
@@ -355,7 +364,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 
 \pred{viveEnCiudadGrande}{i: individuo, th: $eph_h$}{
 	\existe{h}{hogar}{
-		h\in th \wedge\\ personaEnHogar(i, h) \wedge h[@mas500] = 1
+		h\in th \yLuego\\ personaEnHogar(i, h) \wedge esCasaODepto(h) \wedge h[@mas500] = 1
 	}
 }
 
@@ -363,7 +372,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 
 \begin{proc}{costoSubsidioMejora}{\In th: $eph_h$, \In ti: $eph_i$, \In monto: \ent, \Out res: \ent}{}
 	\pre{ encuestaValida(th, ti) \wedge monto > 0 }
-	\post{ res = \sum_{h\in th}\IfThenElse{esHogarSubsidiado(h, ti)}{monto}{0} }
+	\post{ res = \sum_{i=0}^{|th|-1}\IfThenElse{esHogarSubsidiado(th[i], ti)}{monto}{0} }
 \end{proc}
 
 \pred{esHogarSubsidiado}{h: hogar, ti: $eph_i$}{
@@ -465,8 +474,8 @@ ti[i][@componente]<ti[i+1][@componente]
 \begin{proc}{corregirRegion}{\Inout th: $eph_h$, \In ti: $eph_i$}{}
 	\pre{ encuestaValida(th, ti) \wedge th = TH }
 	\post{ |th|=|TH| \yLuego (\forall i: \ent)(
-	0\leq i < |th| \implicaLuego \bloque{+6em}{ (TH[i][@region]=1 \implica
-	\bloque{+2em}{ th[i][@region]=5 \wedge\\
+	0\leq i < |th| \implicaLuego \bloque{+6em}{ (TH[i][@region]=1
+	\implica \bloque{+2em}{ th[i][@region]=5 \wedge\\
 	th[i][@hogCodusu]=TH[i][@hogCodusu] \wedge\\
 	th[i][@hogA\tilde no]=TH[i][@hogA\tilde no] \wedge\\
 	th[i][@hogTrimestre]=TH[i][@hogTrimestre] \wedge\\
@@ -477,8 +486,9 @@ ti[i][@componente]<ti[i+1][@componente]
 	th[i][iv1]=TH[i][iv1] \wedge\\
 	th[i][@iv2]=TH[i][@iv2] \wedge\\
 	th[i][@ii2]=TH[i][@ii2] \wedge\\
-	th[i][@ii3]=TH[i][@ii3] } )\wedge\\ (TH[i][@region]\neq1
-	\implica th[i]=TH[i]) } ) }
+	th[i][@ii3]=TH[i][@ii3] } )\wedge\\
+	(TH[i][@region]\neq1 \implica
+	th[i]=TH[i]) } ) }
 \end{proc}
 
 \subsection{Ejercicio 10}
@@ -519,7 +529,8 @@ ti[i][@componente]<ti[i+1][@componente]
 \end{proc}
 
 \aux{\#personasEnHogarCoincidentes}{ti: $eph_i$, h: $hogar$, busqueda: \TLista{ItemIndividuo\times dato}}{\ent}{
-	\bloque{+2em}{\sum_{j=0}^{|ti|-1} \IfThenElse{personaEnHogar(ti[j], h)\wedge coincideConTerminos(ti[j], busqueda)}{1}{0}}
+	\bloque{+2em}{\sum_{j=0}^{|ti|-1} \IfThenElse{personaEnHogar(ti[j], h)\wedge
+			coincideConTerminos(ti[j], busqueda)}{1}{0}}
 }
 
 \pred{hogarLlenoDeCoincidentes}{ti: $eph_i$, h: $hogar$, busqueda: \TLista{ItemIndividuo\times dato}}{
@@ -533,7 +544,8 @@ ti[i][@componente]<ti[i+1][@componente]
 }
 
 \pred{coincideConTerminos}{i : individuo, busqueda: \TLista{ItemIndividuo\times dato} }{
-	\paraTodo{t}{\ent}{0\leq t < |busqueda| \implicaLuego i[ord(busqueda[t]_0)] = busqueda[t]_1}
+	\paraTodo{t}{\ent}{0\leq t < |busqueda| \implicaLuego i[ord(busqueda[t]_0)] =
+		busqueda[t]_1}
 }
 
 \end{document}
