@@ -8,8 +8,8 @@ include_directories(lib/googletest-master/googletest/include)
 
 
 set(SOURCE_FILES main.cpp
-        ej3/baldosasDelPiso.cpp
-        ej3/Test/baldosasDelPisoTEST.cpp)
+        ej3/electores.cpp
+        ej3/Test/electoresTEST.cpp)
 
 add_executable(LaboTesting ${SOURCE_FILES})
 
