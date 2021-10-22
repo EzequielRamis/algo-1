@@ -352,31 +352,49 @@ TEST(FelicitacionesFrancisco, test11)
 TEST(middleOut, test1)
 {
 	ASSERT_EQ(2, middleOut("iredppipe", "piedpiper"));
+	//	iredppipe
+	//	piredpipe
+	//	piedpiper
 }
 
 TEST(middleOut, test2)
 {
 	ASSERT_EQ(1, middleOut("estt", "test"));
+	//	estt
+	//	test
 }
 
 TEST(middleOut, test3)
 {
 	ASSERT_EQ(2, middleOut("tste", "test"));
+	//	tste
+	//	ttes
+	//	test
 }
 
 TEST(middleOut, test4)
 {
 	ASSERT_EQ(2, middleOut("adhas", "dasha"));
+	//	adhas
+	//	adash
+	//	dasha
 }
 
 TEST(middleOut, test5)
 {
 	ASSERT_EQ(2, middleOut("aashd", "dasha"));
+	//	aashd
+	//	daash
+	//	dasha
 }
 
 TEST(middleOut, test6)
 {
 	ASSERT_EQ(3, middleOut("aahsd", "dasha"));
+	//	aahsd
+	//	daahs
+	//	daash
+	//	dasha
 }
 
 TEST(middleOut, test7)
@@ -387,11 +405,16 @@ TEST(middleOut, test7)
 TEST(middleOut, test8)
 {
 	ASSERT_EQ(3, middleOut("contest", "ntecost"));
+	//	contest
+	//	econtst
+	//	teconst
+	//	ntecost
 }
 
 TEST(middleOut, test9)
 {
 	ASSERT_EQ(4, middleOut("contest", "nstteco"));
+	//	contest
 }
 
 TEST(middleOut, test10)

@@ -206,26 +206,74 @@ int cantidadDeFelicitaciones(vector<string> v)
 	return res;
 }
 
-void middleMove(string &s, int i, bool end)
+// <indice, longitud>, Pre: |s| = |t|
+pair<int, int> rachaMasLarga(string s, string t)
+{
+	int i = 0, n = 0;
+	int j = 0;
+	while (j < s.size())
+	{
+		int k = 0, m = 0, p = 0;
+		while (k < t.size())
+		{
+			if (s[j + p] == t[k])
+				p++;
+			else
+			{
+				m = max(m, p);
+				p = 0;
+			}
+			k++;
+		}
+		m = max(m, p);
+		if (m > n)
+		{
+			n = m;
+			i = j;
+		}
+		j = j + m;
+	}
+	return make_pair(i, n);
+}
+
+string middleMove(string s, int i, bool end)
 {
 	int n = s.size();
 	if (!(1 <= i && i <= n))
-		return;
+		return s;
+	string res = s;
 	i--;
-	char tmp = s[i];
+	char tmp = res[i];
 	if (end)
 	{
 		for (int j = i; j < n - 1; j++)
-			s[j] = s[j + 1];
-		s[n - 1] = tmp;
+			res[j] = res[j + 1];
+		res[n - 1] = tmp;
 	}
 	else
 	{
 		for (int j = i; j > 0; j--)
-			s[j] = s[j - 1];
-		s[0] = tmp;
+			res[j] = res[j - 1];
+		res[0] = tmp;
 	}
-	return;
+	return res;
+}
+
+string asignarMovimientoGanador(vector<string> g, string s)
+{
+	string res;
+	int max = 0;
+	for (int i = 0; i < g.size(); i++)
+	{
+		int racha = rachaMasLarga(g[i], s).second;
+		int coincidencias = 0;
+		if (racha > max)
+		{
+			max = racha;
+			res = g[i];
+		}
+	}
+	return res;
 }
 
 int middleOut(string s, string t)
@@ -233,6 +281,18 @@ int middleOut(string s, string t)
 	if (!esAnagrama(s, t))
 		return -1;
 	int res = 0;
-	sort(s.begin(), s.end());
+	while (s != t)
+	{
+		pair<int, int> racha = rachaMasLarga(s, t);
+		int i1 = racha.first + racha.second;
+		int i2 = racha.first;
+		vector<string> candidatos{
+			middleMove(s, i1, true),
+			middleMove(s, i1, false),
+			middleMove(s, i2, true),
+			middleMove(s, i2, false)};
+		s = asignarMovimientoGanador(candidatos, t);
+		res++;
+	}
 	return res;
 }
