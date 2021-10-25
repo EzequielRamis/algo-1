@@ -560,7 +560,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 		\bloque{+6em}{
 			(\forall i: individuo)(i\in ti \implica i\in TI)\wedge\\
 			(\forall h: hogar)(h\in th \implica h\in TH)\wedge\\
-			(\forall h: hogar)(\forall i: individuo)(
+			(\forall i: individuo)(\forall h: hogar)(
 			\bloque{+2em}{
 				(i\in TI \wedge h\in TH \yLuego personaEnHogar(i,h))\implicaLuego(
 				\bloque{+2em}{
@@ -575,7 +575,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 \end{proc}
 
 \pred{busquedaValida}{busqueda: \TLista{ItemIndividuo\times dato}}{
-	\paraTodo{b}{ItemIndividuo\times dato}{b\in busqueda \implica esAtributoBusquedaValido(ord(b_0), b_1)} \yLuego\\
+	\paraTodo{b}{ItemIndividuo\times dato}{b\in busqueda \implica esAtributoBusquedaValido(ord(b_0), b_1)} \wedge\\
 	\neg\existe{i,j}{\ent}{0\leq i,j < |busqueda| \wedge i\neq j \yLuego
 		ord(busqueda[i]_0)=ord(busqueda[j]_0)}{}
 }
@@ -583,7 +583,7 @@ para uso general: \\ \br\comentario{Tabla Hogares}\\
 \pred{esAtributoBusquedaValido}{i: \ent, dato: \ent}{
 	(i=@indCodusu \implica 0<dato)\wedge\\
 	(i=@componente\implica 1\leq dato)\wedge\\
-	(i=@indAño \implica 1800\leq dato)\wedge\\
+	(i=@indA\tilde{n}o \implica 1800\leq dato)\wedge\\
 	(i=@indTrimestre \implica 1\leq dato \leq 4)\wedge\\
 	(i=@ch4 \implica 1\leq dato \leq 2)\wedge\\
 	(i=@ch6 \implica 0 \leq dato)\wedge\\
