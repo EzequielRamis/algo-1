@@ -1,6 +1,6 @@
 {
   "cmake.configureOnOpen": true,
-  "cmake.sourceDirectory": "${workspaceFolder}/Laboratorio/09/Ejercicios",
+  "cmake.sourceDirectory": "${workspaceFolder}/TPI/template-alumnos",
   "files.associations": {
     "any": "cpp",
     "array": "cpp",
