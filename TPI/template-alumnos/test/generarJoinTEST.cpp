@@ -1,16 +1,15 @@
-#include "../definiciones.h"
 #include "../Funciones_TPI.h"
-#include "../ejercicios.h"
 #include "../auxiliares.h"
+#include "../definiciones.h"
+#include "../ejercicios.h"
 #include "gtest/gtest.h"
+#include <algorithm>
 #include <iostream>
 #include <string>
-#include <algorithm>
 
 using namespace std;
 
-TEST(generarJoinTEST, casoFacil)
-{
+TEST(generarJoinTEST, casoFacil) {
     eph_h th = {{22114, 2018, 3, 319611, 629088, 3, 41, 1, 1, 3, 1, 2},
                 {31117, 2018, 3, 332870, 642475, 3, 40, 1, 1, 6, 6, 1},
                 {22866, 2018, 3, 317157, 627217, 2, 42, 1, 3, 2, 2, 1},
