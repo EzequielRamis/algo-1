@@ -32,18 +32,10 @@ bool vacia(vector<vector<dato>> t) {
     return t.size() == 0;
 }
 
-bool cantidadCorrectaDeColumnasI(eph_i ti) {
+bool cantidadCorrectaDeColumnas(vector<vector<dato>> t, int col) {
     bool res = true;
-    for (int i = 0; i < ti.size(); i++)
-        if (ti[i].size() != FILAS_INDIVIDUO)
-            res = false;
-    return res;
-}
-
-bool cantidadCorrectaDeColumnasH(eph_h th) {
-    bool res = true;
-    for (int i = 0; i < th.size(); i++)
-        if (th[i].size() != FILAS_HOGAR)
+    for (int i = 0; i < t.size(); i++)
+        if (t[i].size() != col)
             res = false;
     return res;
 }

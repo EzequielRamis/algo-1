@@ -5,10 +5,9 @@
 using namespace std;
 // Implementacion Problema 1
 bool esEncuestaValida(eph_h th, eph_i ti) {
-    if (esMatriz(th) && esMatriz(ti) &&
-        !vacia(th) && !vacia(ti) &&
-        cantidadCorrectaDeColumnasI(ti) &&
-        cantidadCorrectaDeColumnasH(th)) {
+    if (!vacia(th) && !vacia(ti) &&
+        cantidadCorrectaDeColumnas(ti, FILAS_INDIVIDUO) &&
+        cantidadCorrectaDeColumnas(th, FILAS_HOGAR)) {
         return (
             !hayIndividuosSinHogares(ti, th) && !hayHogaresSinIndividuos(ti, th) &&
             !hayRepetidosI(ti) && !hayRepetidosH(th) &&
@@ -20,13 +19,26 @@ bool esEncuestaValida(eph_h th, eph_i ti) {
     return false;
 }
 
+int maxCantHabitRegion(eph_h th, int region) {
+    int max = 0;
+    for (int i = 0; i < th.size(); i++) {
+        //chequear si debe ser casa o no
+        if (th[i][REGION] == region && esCasa(th[i]) && th[i][IV2] > max)
+            max = th[i][IV2];
+    }
+    return max;
+}
+
 // Implementacion Problema 2
 vector<int> histHabitacional(eph_h th, eph_i ti, int region) {
-    vector<int> resultado = {-1, -1, -1, -1, -1, -1};
-
-    // TODO
-
-    return resultado;
+    if (!esEncuestaValida(th, ti) || !valorRegionValido(region))
+        return {-1, -1, -1, -1, -1, -1};
+    int maxHab = maxCantHabitRegion(th, region);
+    vector<int> res(maxHab, 0);
+    for (int i = 0; i < th.size(); i++)
+        if (esCasa(th[i]) && th[i][REGION] == region)
+            res[th[i][IV2] - 1]++;
+    return res;
 }
 
 // Implementacion Problema 3
