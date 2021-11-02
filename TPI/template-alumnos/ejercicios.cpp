@@ -5,11 +5,19 @@
 using namespace std;
 // Implementacion Problema 1
 bool esEncuestaValida(eph_h th, eph_i ti) {
-    bool resp = false;
-
-    // TODO
-
-    return resp;
+    if (esMatriz(th) && esMatriz(ti) &&
+        !vacia(th) && !vacia(ti) &&
+        cantidadCorrectaDeColumnasI(ti) &&
+        cantidadCorrectaDeColumnasH(th)) {
+        return (
+            !hayIndividuosSinHogares(ti, th) && !hayHogaresSinIndividuos(ti, th) &&
+            !hayRepetidosI(ti) && !hayRepetidosH(th) &&
+            mismoAnioYTrimestre(ti, th) &&
+            menosDe21MiembrosPorHogar(th, ti) &&
+            cantidadValidaDormitorios(th) &&
+            valoresEnRangoI(ti) && valoresEnRangoH(th));
+    }
+    return false;
 }
 
 // Implementacion Problema 2

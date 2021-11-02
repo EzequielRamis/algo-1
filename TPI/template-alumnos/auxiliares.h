@@ -19,7 +19,7 @@ bool hayIndividuoConCodigo(eph_i ti, int c);
 bool hayRepetidosI(eph_i ti);
 bool mismoCodusuYComponente(individuo i1, individuo i2);
 bool hayRepetidosH(eph_h th);
-bool mismoAnoYTrimestre(eph_i ti, eph_h th);
+bool mismoAnioYTrimestre(eph_i ti, eph_h th);
 bool menosDe21MiembrosPorHogar(eph_h th, eph_i ti);
 int cantHabitantes(hogar h, eph_i ti);
 bool esSuHogar(hogar h, individuo i);
