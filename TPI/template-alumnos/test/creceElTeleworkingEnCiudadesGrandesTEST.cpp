@@ -85,6 +85,9 @@ TEST(creceElTeleworkingEnCiudadesGrandesTEST, nocrece) {
                  {31117, 2020, 5, 0, 3, 2, 15, -1, 0, 5000, 6}, // estado no informado
                  {22114, 2020, 1, 0, 3, 1, 18, 0, 0, 20000, 1}};
 
+    EXPECT_TRUE(esEncuestaValida(t1h, t1i));
+    EXPECT_TRUE(esEncuestaValida(t2h, t2i));
+
     EXPECT_EQ(false, creceElTeleworkingEnCiudadesGrandes(t1h, t1i, t2h, t2i));
 }
 

@@ -47,6 +47,8 @@ TEST(laCasaEstaQuedandoChicaTEST, hacinamientoCriticoTodosIgualAUno) {
                 {22112, 2020, 3, 0, 3, 1, 18, 0, 0, 20000, 10},
                 {22112, 2020, 4, 0, 3, 1, 18, 0, 0, 20000, 10}};
 
+    EXPECT_TRUE(esEncuestaValida(th, ti));
+
     vector<pair<int, float>> esperado = {make_pair(1, 1.0),
                                          make_pair(40, 1.0),
                                          make_pair(41, 1.0),

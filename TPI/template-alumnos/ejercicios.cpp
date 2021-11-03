@@ -23,7 +23,7 @@ int maxCantHabitRegion(eph_h th, int region) {
     int max = 0;
     for (int i = 0; i < th.size(); i++) {
         //chequear si debe ser casa o no
-        if (th[i][REGION] == region && esCasa(th[i]) && th[i][IV2] > max)
+        if (th[i][REGION] == region && th[i][IV2] > max)
             max = th[i][IV2];
     }
     return max;
