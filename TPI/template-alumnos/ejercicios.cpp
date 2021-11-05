@@ -19,20 +19,8 @@ bool esEncuestaValida(eph_h th, eph_i ti) {
     return false;
 }
 
-int maxCantHabitRegion(eph_h th, int region) {
-    int max = 0;
-    for (int i = 0; i < th.size(); i++) {
-        //chequear si debe ser casa o no
-        if (th[i][REGION] == region && th[i][IV2] > max)
-            max = th[i][IV2];
-    }
-    return max;
-}
-
 // Implementacion Problema 2
 vector<int> histHabitacional(eph_h th, eph_i ti, int region) {
-    if (!esEncuestaValida(th, ti) || !valorRegionValido(region))
-        return {-1, -1, -1, -1, -1, -1};
     int maxHab = maxCantHabitRegion(th, region);
     vector<int> res(maxHab, 0);
     for (int i = 0; i < th.size(); i++)
@@ -44,24 +32,20 @@ vector<int> histHabitacional(eph_h th, eph_i ti, int region) {
 // Implementacion Problema 3
 vector<pair<int, float>> laCasaEstaQuedandoChica(eph_h th, eph_i ti) {
 
-    vector<pair<int, float>> resp = {make_pair(1, -1.0),
-                                     make_pair(40, -1.0),
-                                     make_pair(41, -1.0),
-                                     make_pair(42, -1.0),
-                                     make_pair(43, -1.0),
-                                     make_pair(44, -1.0)};
-    // TODO
-
+    vector<pair<int, float>> resp = {make_pair(1, 0),
+                                     make_pair(40, 0),
+                                     make_pair(41, 0),
+                                     make_pair(42, 0),
+                                     make_pair(43, 0),
+                                     make_pair(44, 0)};
+    for (int i = 0; i < resp.size(); i++)
+        resp[i].second = proporcionDeCasasConHC(th, ti, resp[i].first);
     return resp;
 }
 
 // Implementacion Problema 4
 bool creceElTeleworkingEnCiudadesGrandes(eph_h t1h, eph_i t1i, eph_h t2h, eph_i t2i) {
-    bool resp = false;
-
-    // TODO
-
-    return resp;
+    return proporcionTeleworking(t2h, t2i) > proporcionTeleworking(t1h, t1i);
 }
 
 // Implementacion Problema 5

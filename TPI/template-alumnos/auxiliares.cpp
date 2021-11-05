@@ -192,3 +192,121 @@ int ingresos(hogar h, eph_i ti) {
             sum += ti[i][p47T];
     return sum;
 }
+
+int maxCantHabitRegion(eph_h th, int region) {
+    int max = 0;
+    for (int i = 0; i < th.size(); i++) {
+        //chequear si debe ser casa o no
+        if (th[i][REGION] == region && th[i][IV2] > max)
+            max = th[i][IV2];
+    }
+    return max;
+}
+
+bool esHogarValido(hogar h, int region) {
+    return esCasa(h) && h[REGION] == region && h[MAS_500] == 0;
+}
+
+bool hogarConHacinamientoCritico(hogar h, eph_i ti) {
+    return cantHabitantes(h, ti) > 3 * h[II2];
+}
+
+int cantHogaresValidos(eph_h th, int region) {
+    int sum = 0;
+    for (int i = 0; i < th.size(); i++)
+        if (esHogarValido(th[i], region))
+            sum++;
+    return sum;
+}
+
+int cantHogaresValidosConHC(eph_h th, eph_i ti, int region) {
+    int sum = 0;
+    for (int i = 0; i < th.size(); i++)
+        if (esHogarValido(th[i], region) && hogarConHacinamientoCritico(th[i], ti))
+            sum++;
+    return sum;
+}
+
+float proporcionDeCasasConHC(eph_h th, eph_i ti, int region) {
+    float proporcion = 0;
+    if (cantHogaresValidos(th, region) > 0)
+        proporcion = float(cantHogaresValidosConHC(th, ti, region) / cantHogaresValidos(th, region));
+    return proporcion;
+}
+
+float proporcionTeleworking(eph_h th, eph_i ti) {
+    if (cantIndividuosQueTrabajan(th, ti) > 0)
+        return float(cantIndividuosTrabajandoEnSuVivienda(th, ti)) / float(cantIndividuosQueTrabajan(th, ti));
+    return 0;
+}
+
+int cantIndividuosTrabajandoEnSuVivienda(eph_h th, eph_i ti) {
+    int sum = 0;
+    for (int i = 0; i < ti.size(); i++)
+        if (trabaja(ti[i]) && trabajaEnSuVivienda(ti[i], th) && individuoEnHogarValido(ti[i], th))
+            sum++;
+    return sum;
+}
+
+int cantIndividuosQueTrabajan(eph_h th, eph_i ti) {
+    int sum = 0;
+    for (int i = 0; i < ti.size(); i++)
+        if (trabaja(ti[i]) && individuoEnHogarValido(ti[i], th))
+            sum++;
+    return sum;
+}
+bool trabajaEnSuVivienda(individuo i, eph_h th) {
+    return realizaSusTareasEnEsteHogar(i) && suHogarTieneEspaciosReservadosParaElTrabajo(i, th);
+}
+
+bool individuoEnHogarValido(individuo i, eph_h th) {
+    return esDeCiudadGrande(i, th) && suHogarEsCasaODepartamento(i, th);
+}
+
+bool trabaja(individuo i) {
+    return i[ESTADO] == 1;
+}
+
+int anio(eph_i ti) {
+    return ti[0][INDANIO];
+}
+
+int trimestre(eph_i ti) {
+    return ti[0][INDTRIMESTRE];
+}
+
+bool esDeCiudadGrande(individuo i, eph_h th) {
+    bool res = false;
+    for (int h = 0; h < th.size(); h++)
+        if (esSuHogar(th[h], i) && th[h][MAS_500] == 1)
+            res = true;
+    return res;
+}
+
+bool suHogarTieneEspaciosReservadosParaElTrabajo(individuo i, eph_h th) {
+    bool res = false;
+    for (int h = 0; h < th.size(); h++)
+        if (esSuHogar(th[h], i) && tieneEspaciosReservadosParaElTrabajo(th[h]))
+            res = true;
+    return res;
+}
+
+bool suHogarEsCasaODepartamento(individuo i, eph_h th) {
+    bool res = false;
+    for (int h = 0; h < th.size(); h++)
+        if (esSuHogar(th[h], i) && esCasaODepartamento(th[h]))
+            res = true;
+    return res;
+}
+
+bool esCasaODepartamento(hogar h) {
+    return h[IV1] == 1 || h[IV1] == 2;
+}
+
+bool realizaSusTareasEnEsteHogar(individuo i) {
+    return i[PP04G] == 6;
+}
+
+bool tieneEspaciosReservadosParaElTrabajo(hogar h) {
+    return h[II3] == 1;
+}

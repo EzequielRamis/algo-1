@@ -30,3 +30,29 @@ bool hogarValido(hogar h);
 bool valorRegionValido(int r);
 bool esCasa(hogar h);
 int ingresos(hogar h, eph_i ti);
+
+int maxCantHabitRegion(eph_h th, int region);
+
+bool esHogarValido(hogar h, int region);
+bool hogarConHacinamientoCritico(hogar h, eph_i ti);
+int cantHogaresValidos(eph_h th, int region);
+int cantHogaresValidosConHC(eph_h th, eph_i ti, int region);
+float proporcionDeCasasConHC(eph_h th, eph_i ti, int region);
+
+float proporcionTeleworking(eph_h th, eph_i ti);
+int cantIndividuosTrabajandoEnSuVivienda(eph_h th, eph_i ti);
+int cantIndividuosQueTrabajan(eph_h th, eph_i ti);
+bool trabajaEnSuVivienda(individuo i, eph_h th);
+bool individuoEnHogarValido(individuo i, eph_h th);
+bool trabaja(individuo i);
+int anio(eph_i ti);
+int trimestre(eph_i ti);
+bool esDeCiudadGrande(individuo i, eph_h th);
+bool suHogarTieneEspaciosReservadosParaElTrabajo(individuo i, eph_h th);
+bool suHogarEsCasaODepartamento(individuo i, eph_h th);
+bool esCasaODepartamento(hogar h);
+bool realizaSusTareasEnEsteHogar(individuo i);
+bool tieneEspaciosReservadosParaElTrabajo(hogar h);
+
+bool tieneCasaPropia(hogar h);
+bool tieneCasaChica(hogar h, eph_i ti);
