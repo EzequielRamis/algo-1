@@ -50,30 +50,31 @@ bool creceElTeleworkingEnCiudadesGrandes(eph_h t1h, eph_i t1i, eph_h t2h, eph_i 
 
 // Implementacion Problema 5
 int costoSubsidioMejora(eph_h th, eph_i ti, int monto) {
-    int resp = -1;
-
-    // TODO
-
-    return resp;
+    int res = 0;
+    for (int i = 0; i < th.size(); i++)
+        if (tieneCasaPropia(th[i]) && tieneCasaChica(th[i], ti))
+            res += monto;
+    return res;
 }
 
 // Implementacion Problema 6
 join_hi generarJoin(eph_h th, eph_i ti) {
-    hogar h = {};
-    individuo i = {};
-    join_hi resp = {make_pair(h, i)};
-
-    // TODO
-
+    join_hi resp;
+    for (int i = 0; i < ti.size(); i++) {
+        int j = 0;
+        while (j < th.size() && th[j][HOGCODUSU] != ti[i][INDCODUSU])
+            j++;
+        individuo ind = ti[i];
+        hogar hog = th[j];
+        resp.push_back(make_pair(hog, ind));
+    }
     return resp;
 }
 
 // Implementacion Problema 7
 void ordenarRegionYCODUSU(eph_h &th, eph_i &ti) {
-
-    // TODO
-
-    return;
+    ordenarHogaresRegionYCODUSU(th);
+    ordenarIndividuosRegionYCODUSU(ti, th);
 }
 
 // Implementacion Problema 8
