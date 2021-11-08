@@ -232,9 +232,9 @@ TEST(esEncuestaValidaTEST, invalidaMasDormitoriosQueHabitaciones) {
     EXPECT_FALSE(esEncuestaValida(th, ti));
 }
 
-TEST(esEncuestaValidaTEST, invalidaTrimestreFuera) {
+TEST(esEncuestaValidaTEST, invalidaHogarFueraRango) {
 
-    eph_h th = {{22114, 2020, 5, 319611, 629088, 3, 41, 0, 1, 3, 1, 2}, // <- acá
+    eph_h th = {{-1, 2020, 3, 319611, 629088, 3, 41, 0, 1, 3, 1, 2}, // <- acá
                 {31117, 2020, 3, 332870, 642475, 3, 40, 0, 1, 6, 6, 2},
                 {22866, 2020, 3, 317157, 627217, 2, 42, 1, 1, 2, 2, 2},
                 {20957, 2020, 3, 313965, 623297, 1, 43, 0, 1, 3, 1, 2}};
@@ -252,7 +252,7 @@ TEST(esEncuestaValidaTEST, invalidaTrimestreFuera) {
                 {31117, 2020, 10, 0, 3, 1, 28, 1, 3, 5000, 1},
                 {22866, 2020, 1, 0, 3, 1, 31, 1, 3, 59000, 10},
                 {22866, 2020, 2, 1, 3, 2, 28, 1, 3, 0, 6},
-                {22114, 2020, 1, 0, 3, 1, 18, 0, 0, 20000, 10}};
+                {-1, 2020, 1, 0, 3, 1, 18, 0, 0, 20000, 10}};
 
     EXPECT_FALSE(esEncuestaValida(th, ti));
 }
@@ -283,7 +283,7 @@ TEST(esEncuestaValidaTEST, invalidaHogarSinIndividuo) {
 
 TEST(esEncuestaValidaTEST, invalidaEstaLlenoUnHogar) {
 
-    eph_h th = {{22114, 2020, 5, 319611, 629088, 3, 41, 0, 1, 3, 1, 2}};
+    eph_h th = {{22114, 2020, 3, 319611, 629088, 3, 41, 0, 1, 3, 1, 2}};
 
     eph_i ti = {{22114, 2020, 1, 1, 3, 1, 88, 0, 0, 90000, 10},
                 {22114, 2020, 2, 1, 3, 2, 82, 0, 0, 25000, 10},

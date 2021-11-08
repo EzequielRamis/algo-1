@@ -36,7 +36,7 @@ bool hayHogarConCodigo(eph_h th, int c) {
 bool hayHogaresSinIndividuos(eph_i ti, eph_h th) {
     bool res = false;
     for (int i = 0; i < th.size(); i++)
-        if (!hayIndividuoConCodigo(ti, ti[i][HOGCODUSU]))
+        if (!hayIndividuoConCodigo(ti, th[i][HOGCODUSU]))
             res = true;
     return res;
 }
