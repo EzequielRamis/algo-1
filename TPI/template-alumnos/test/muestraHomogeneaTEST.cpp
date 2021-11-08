@@ -106,3 +106,19 @@ TEST(muestraHomogeneaTEST, dosSolucionesDe3) {
     bool esperado = res1 == propuesto || res2 == propuesto;
     EXPECT_EQ(true, esperado);
 }
+
+TEST(muestraHomogeneaTEST, muestraVacia) {
+    vector<hogar> esperado = {};
+    eph_h th = {{1, 2018, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1}};
+
+    eph_i ti = {{1, 2018, 1, 1, 1, 2, 5, 1, 2, 25, 1}};
+    EXPECT_TRUE(esEncuestaValida(th, ti));
+
+    vector<hogar> res = muestraHomogenea(th, ti);
+
+    // uso sort para independizar el orden
+    sort(esperado.begin(), esperado.end());
+    sort(res.begin(), res.end());
+
+    EXPECT_EQ(res, esperado);
+}

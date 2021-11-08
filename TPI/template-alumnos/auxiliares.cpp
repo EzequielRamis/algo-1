@@ -269,14 +269,6 @@ bool trabaja(individuo i) {
     return i[ESTADO] == 1;
 }
 
-int anio(eph_i ti) {
-    return ti[0][INDANIO];
-}
-
-int trimestre(eph_i ti) {
-    return ti[0][INDTRIMESTRE];
-}
-
 bool esDeCiudadGrande(individuo i, eph_h th) {
     bool res = false;
     for (int h = 0; h < th.size(); h++)

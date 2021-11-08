@@ -46,8 +46,6 @@ int cantIndividuosQueTrabajan(eph_h th, eph_i ti);
 bool trabajaEnSuVivienda(individuo i, eph_h th);
 bool individuoEnHogarValido(individuo i, eph_h th);
 bool trabaja(individuo i);
-int anio(eph_i ti);
-int trimestre(eph_i ti);
 bool esDeCiudadGrande(individuo i, eph_h th);
 bool suHogarTieneEspaciosReservadosParaElTrabajo(individuo i, eph_h th);
 bool suHogarEsCasaODepartamento(individuo i, eph_h th);
