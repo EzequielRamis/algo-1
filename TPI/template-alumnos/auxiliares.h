@@ -77,3 +77,7 @@ eph_h hogaresRes(eph_i &ti, eph_h &th, vector<pair<int, dato>> busqueda);
 eph_i individuosRes(eph_i &ti, eph_h &th, vector<pair<int, dato>> busqueda);
 void individuosEnEncuesta(eph_i &ti, vector<pair<int, dato>> busqueda);
 void hogaresEnEncuesta(eph_i &ti, eph_h &th, vector<pair<int, dato>> busqueda);
+
+int cantHogaresEnAnillo(int distDesde, int distHasta, pair<int, int> centro, eph_h th);
+bool hogarEnAnillo(int distDesde, int distHasta, pair<int, int> centro, hogar h);
+float distanciaEuclidiana(pair<int, int> centro, int latitud, int longitud);

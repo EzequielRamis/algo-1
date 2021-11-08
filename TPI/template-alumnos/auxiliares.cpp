@@ -475,11 +475,13 @@ int indiceGrupoConDif(vector<puntosDiferenciaIngresos> &r, puntoDiferenciaIngres
 vector<puntosDiferenciaIngresos> agruparPorDiferencia(puntosDiferenciaIngresos ps) {
     vector<puntosDiferenciaIngresos> res;
     for (int i = 0; i < ps.size(); i++) {
-        int j = indiceGrupoConDif(res, ps[i]);
-        if (j != -1)
-            res[j].push_back(ps[i]);
-        else
-            res.push_back({ps[i]});
+        if (ps[i].second != 0) {
+            int j = indiceGrupoConDif(res, ps[i]);
+            if (j != -1)
+                res[j].push_back(ps[i]);
+            else
+                res.push_back({ps[i]});
+        }
     }
     return res;
 }
@@ -626,4 +628,21 @@ void hogaresEnEncuesta(eph_i &ti, eph_h &th, vector<pair<int, dato>> busqueda) {
             thFinal.push_back(th[j]);
     }
     th = thFinal;
+}
+
+int cantHogaresEnAnillo(int distDesde, int distHasta, pair<int, int> centro, eph_h th) {
+    int sum = 0;
+    for (int i = 0; i < th.size(); i++)
+        if (hogarEnAnillo(distDesde, distHasta, centro, th[i]))
+            sum++;
+    return sum;
+}
+
+bool hogarEnAnillo(int distDesde, int distHasta, pair<int, int> centro, hogar h) {
+    float d = distanciaEuclidiana(centro, h[HOGLATITUD], h[HOGLONGITUD]);
+    return float(distDesde) < d && d <= float(distHasta);
+};
+
+float distanciaEuclidiana(pair<int, int> centro, int latitud, int longitud) {
+    return sqrt(pow(centro.first - latitud, 2) + pow(centro.second - longitud, 2));
 }

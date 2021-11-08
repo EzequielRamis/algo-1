@@ -78,6 +78,7 @@ void ordenarRegionYCODUSU(eph_h &th, eph_i &ti) {
 }
 
 // Implementacion Problema 8
+// El test2 esta mal porque los hogares con 0 ingresos tambien tienen la muestra mas larga
 vector<hogar> muestraHomogenea(eph_h th, eph_i ti) {
     ordenarPorIngreso(th, ti);
     vector<hogar> resp = muestraHomogeneaCruda(th, ti);
@@ -97,10 +98,11 @@ void corregirRegion(eph_h &th, eph_i ti) {
 
 // Implementacion Problema 10
 vector<int> histogramaDeAnillosConcentricos(eph_h th, eph_i ti, pair<int, int> centro, vector<int> distancias) {
-    vector<int> resp = {};
-
-    // TODO
-
+    vector<int> resp;
+    int len = distancias.size();
+    resp.push_back(cantHogaresEnAnillo(0, distancias[0], centro, th));
+    for (int i = 0; i < len - 1; i++)
+        resp.push_back(cantHogaresEnAnillo(distancias[i], distancias[i + 1], centro, th));
     return resp;
 }
 
