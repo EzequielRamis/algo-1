@@ -78,21 +78,21 @@ void ordenarRegionYCODUSU(eph_h &th, eph_i &ti) {
 }
 
 // Implementacion Problema 8
-vector<hogar> muestraHomogenea(eph_h &th, eph_i &ti) {
-    hogar h = {};
-    vector<hogar> resp = {h};
-
-    // TODO
-
-    return resp;
+vector<hogar> muestraHomogenea(eph_h th, eph_i ti) {
+    ordenarPorIngreso(th, ti);
+    vector<hogar> resp = muestraHomogeneaCruda(th, ti);
+    if (resp.size() >= 3) {
+        return resp;
+    }
+    return {};
 }
 
 // Implementacion Problema 9
 void corregirRegion(eph_h &th, eph_i ti) {
-
-    // TODO
-
-    return;
+    for (int i = 0; i < th.size(); i++) {
+        if (th[i][REGION] == 1)
+            th[i][REGION] = 43;
+    }
 }
 
 // Implementacion Problema 10
@@ -106,11 +106,8 @@ vector<int> histogramaDeAnillosConcentricos(eph_h th, eph_i ti, pair<int, int> c
 
 // Implementacion Problema 11
 pair<eph_h, eph_i> quitarIndividuos(eph_i &ti, eph_h &th, vector<pair<int, dato>> busqueda) {
-    eph_h rth = {{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
-    eph_i rti = {{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
-    pair<eph_h, eph_i> resp = make_pair(rth, rti);
-
-    // TODO
-
+    pair<eph_h, eph_i> resp = make_pair(hogaresRes(ti, th, busqueda), individuosRes(ti, th, busqueda));
+    hogaresEnEncuesta(ti, th, busqueda);
+    individuosEnEncuesta(ti, busqueda);
     return resp;
 }

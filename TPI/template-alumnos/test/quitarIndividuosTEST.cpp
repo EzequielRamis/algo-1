@@ -3,6 +3,7 @@
 #include "../ejercicios.h"
 #include "../auxiliares.h"
 #include "gtest/gtest.h"
+#include <algorithm>
 #include <iostream>
 #include <string>
 

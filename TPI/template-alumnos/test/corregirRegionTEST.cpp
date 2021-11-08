@@ -2,6 +2,7 @@
 #include "../Funciones_TPI.h"
 #include "../ejercicios.h"
 #include "gtest/gtest.h"
+#include <algorithm>
 #include <iostream>
 #include <string>
 #include "../auxiliares.h"

@@ -2,6 +2,7 @@
 #define SOLUCION_AUXILIARES_H
 
 #include "definiciones.h"
+#include <vector>
 
 #endif //SOLUCION_AUXILIARES_H
 
@@ -56,3 +57,23 @@ bool tieneEspaciosReservadosParaElTrabajo(hogar h);
 
 bool tieneCasaPropia(hogar h);
 bool tieneCasaChica(hogar h, eph_i ti);
+
+void ordenarHogaresRegionYCODUSU(eph_h &th);
+void ordenarIndividuosRegionYCODUSU(eph_i &ti, eph_h &th);
+bool vivenJuntos(individuo i1, individuo i2);
+bool hogarEstaAntes(hogar h1, hogar h2, eph_h th);
+bool suHogarEstaAntes(individuo i1, individuo i2, eph_h th);
+
+int diferenciaMasRecurrente(eph_h th, eph_i ti);
+bool estaEnDifs(vector<pair<int, int>> difs, int n);
+eph_h muestraHomogeneaCruda(eph_h th, eph_i ti);
+void ordenarPorIngreso(vector<hogar> &v, eph_i ti);
+
+bool cumpleEstaCondicion(pair<int, dato> busquedaJ, individuo i);
+bool cumpleCadaCondicion(vector<pair<int, dato>> busqueda, individuo i);
+bool hayIndividuoCumpleCondicionEnHogar(hogar h, vector<pair<int, dato>> busqueda, eph_i ti);
+bool hayIndividuoNoCumpleCondicionEnHogar(hogar h, vector<pair<int, dato>> busqueda, eph_i ti);
+eph_h hogaresRes(eph_i &ti, eph_h &th, vector<pair<int, dato>> busqueda);
+eph_i individuosRes(eph_i &ti, eph_h &th, vector<pair<int, dato>> busqueda);
+void individuosEnEncuesta(eph_i &ti, vector<pair<int, dato>> busqueda);
+void hogaresEnEncuesta(eph_i &ti, eph_h &th, vector<pair<int, dato>> busqueda);

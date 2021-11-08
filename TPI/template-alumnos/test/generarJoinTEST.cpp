@@ -4,6 +4,7 @@
 #include "../auxiliares.h"
 #include "gtest/gtest.h"
 #include <iostream>
+#include <algorithm>
 #include <string>
 
 using namespace std;
