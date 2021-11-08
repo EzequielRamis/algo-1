@@ -5,31 +5,6 @@
 
 using namespace std;
 
-bool esMatriz(vector<vector<dato>> t) {
-    bool res = true;
-    int len = t.size();
-    for (int i = 0; i < len - 1; i++)
-        if (t[i].size() != t[i + 1].size())
-            res = false;
-    return res;
-}
-
-bool individuoEnTabla(individuo ind, eph_i ti) {
-    bool res = false;
-    for (int i = 0; i < ti.size(); i++)
-        if (ind == ti[i])
-            res = true;
-    return res;
-}
-
-bool hogarEnTabla(hogar h, eph_h th) {
-    bool res = false;
-    for (int i = 0; i < th.size(); i++)
-        if (h == th[i])
-            res = true;
-    return res;
-}
-
 bool vacia(vector<vector<dato>> t) {
     return t.size() == 0;
 }

@@ -6,10 +6,7 @@
 
 #endif //SOLUCION_AUXILIARES_H
 
-bool esMatriz(vector<vector<dato>> t);
 bool sonIguales(vector<dato> v1, vector<dato> v2);
-bool individuoEnTabla(individuo ind, eph_i ti);
-bool hogarEnTabla(hogar h, eph_h th);
 bool vacia(vector<vector<dato>> t);
 bool cantidadCorrectaDeColumnas(vector<vector<dato>> t, int col);
 bool hayIndividuosSinHogares(eph_i ti, eph_h th);
