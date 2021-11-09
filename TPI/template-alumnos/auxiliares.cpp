@@ -423,15 +423,15 @@ i ->    00  00  00  01  03  20  24  26  27  30  30
 // vector de ingresos esperado test ordenado
 // 24, 27, 30
 
-//      ((hogar x, hogar y), diferencia)
-typedef pair<pair<hogar, hogar>, int> puntoDiferenciaIngresos;
-typedef vector<puntoDiferenciaIngresos> puntosDiferenciaIngresos;
+//      ((hogar x, hogar y), diferencia de ingresos)
+typedef pair<pair<hogar, hogar>, int> escalonDiferencia;
+typedef vector<escalonDiferencia> escaleraDiferencia;
 
 int diferenciaDeIngresos(hogar h1, hogar h2, eph_i ti) {
     return abs(ingresos(h1, ti) - ingresos(h2, ti));
 }
 
-int indiceGrupoConDif(vector<puntosDiferenciaIngresos> &r, puntoDiferenciaIngresos p) {
+int indiceGrupoConDif(vector<escaleraDiferencia> &r, escalonDiferencia p) {
     int res = -1;
     for (int i = 0; i < r.size(); i++)
         if (r[i][0].second == p.second)
@@ -439,8 +439,8 @@ int indiceGrupoConDif(vector<puntosDiferenciaIngresos> &r, puntoDiferenciaIngres
     return res;
 }
 
-vector<puntosDiferenciaIngresos> agruparPorDiferencia(puntosDiferenciaIngresos ps) {
-    vector<puntosDiferenciaIngresos> res;
+vector<escaleraDiferencia> agruparPorDiferencia(escaleraDiferencia ps) {
+    vector<escaleraDiferencia> res;
     for (int i = 0; i < ps.size(); i++) {
         if (ps[i].second != 0) {
             int j = indiceGrupoConDif(res, ps[i]);
@@ -453,63 +453,45 @@ vector<puntosDiferenciaIngresos> agruparPorDiferencia(puntosDiferenciaIngresos p
     return res;
 }
 
-eph_h quitarDuplicados(eph_h v) {
-    int len = v.size();
-    for (int i = 0; i < len; i++) {
-        for (int j = 0; j < len - 1; j++) {
-            if (v[j][HOGCODUSU] > v[j + 1][HOGCODUSU]) {
-                hogar tmp = v[j];
-                v[j] = v[j + 1];
-                v[j + 1] = tmp;
-            }
-        }
-    }
-    eph_h res = {v[0]};
-    for (int i = 1; i < v.size(); i++)
-        if (v[i - 1][HOGCODUSU] != v[i][HOGCODUSU])
-            res.push_back(v[i]);
-    return res;
-}
-
 eph_h muestraHomogeneaCruda(eph_h th, eph_i ti) {
-    puntosDiferenciaIngresos puntos;
+    escaleraDiferencia esd;
     for (int i = 0; i < th.size(); i++)
         for (int j = i + 1; j < th.size(); j++) {
             int d = diferenciaDeIngresos(th[i], th[j], ti);
-            puntos.push_back(make_pair(make_pair(th[i], th[j]), d));
+            esd.push_back(make_pair(make_pair(th[i], th[j]), d));
         }
-    vector<puntosDiferenciaIngresos> agrupadosPorDiferencia = agruparPorDiferencia(puntos);
-    for (int i = 0; i < agrupadosPorDiferencia.size(); i++) {
-        puntosDiferenciaIngresos p = agrupadosPorDiferencia[i];
-        puntosDiferenciaIngresos escalonadaMasLarga;
-        for (int j = 0; j < p.size(); j++) {
-            puntosDiferenciaIngresos escalonadaAComparar = {p[j]};
-            for (int k = j + 1; k < p.size(); k++) {
-                int len = escalonadaAComparar.size();
-                puntoDiferenciaIngresos ultimo = escalonadaAComparar[len - 1];
+    vector<escaleraDiferencia> agrupadasPorDiferencia = agruparPorDiferencia(esd);
+    for (int i = 0; i < agrupadasPorDiferencia.size(); i++) {
+        escaleraDiferencia ed = agrupadasPorDiferencia[i];
+        escaleraDiferencia escaleraMasLarga;
+        for (int j = 0; j < ed.size(); j++) {
+            escaleraDiferencia escaleraAComparar = {ed[j]};
+            for (int k = j + 1; k < ed.size(); k++) {
+                int len = escaleraAComparar.size();
+                escalonDiferencia ultimo = escaleraAComparar[len - 1];
                 int ingresoAnterior = ingresos(ultimo.first.second, ti);
-                int ingresoActual = ingresos(p[k].first.first, ti);
+                int ingresoActual = ingresos(ed[k].first.first, ti);
                 if (ingresoAnterior == ingresoActual) {
-                    escalonadaAComparar.push_back(p[k]);
+                    escaleraAComparar.push_back(ed[k]);
                 }
             }
-            if (escalonadaAComparar.size() > escalonadaMasLarga.size())
-                escalonadaMasLarga = escalonadaAComparar;
+            if (escaleraAComparar.size() > escaleraMasLarga.size())
+                escaleraMasLarga = escaleraAComparar;
         }
-        agrupadosPorDiferencia[i] = escalonadaMasLarga;
+        agrupadasPorDiferencia[i] = escaleraMasLarga;
+    }
+    escaleraDiferencia escaleraMasLarga;
+    for (int i = 0; i < agrupadasPorDiferencia.size(); i++) {
+        if (agrupadasPorDiferencia[i].size() > escaleraMasLarga.size())
+            escaleraMasLarga = agrupadasPorDiferencia[i];
     }
     eph_h muestraMasLarga;
-    for (int i = 0; i < agrupadosPorDiferencia.size(); i++) {
-        eph_h hogaresAgrupados;
-        int len = agrupadosPorDiferencia[i].size();
-        for (int j = 0; j < len; j++) {
-            hogaresAgrupados.push_back(agrupadosPorDiferencia[i][j].first.first);
-            hogaresAgrupados.push_back(agrupadosPorDiferencia[i][j].first.second);
-        }
-        hogaresAgrupados = quitarDuplicados(hogaresAgrupados);
-        if (hogaresAgrupados.size() > muestraMasLarga.size())
-            muestraMasLarga = hogaresAgrupados;
+    int len = escaleraMasLarga.size();
+    for (int i = 0; i < len; i++) {
+        muestraMasLarga.push_back(escaleraMasLarga[i].first.first);
     }
+    if (len > 0)
+        muestraMasLarga.push_back(escaleraMasLarga[len - 1].first.second);
     return muestraMasLarga;
 }
 

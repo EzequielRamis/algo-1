@@ -59,8 +59,6 @@ bool vivenJuntos(individuo i1, individuo i2);
 bool hogarEstaAntes(hogar h1, hogar h2, eph_h th);
 bool suHogarEstaAntes(individuo i1, individuo i2, eph_h th);
 
-int diferenciaMasRecurrente(eph_h th, eph_i ti);
-bool estaEnDifs(vector<pair<int, int>> difs, int n);
 eph_h muestraHomogeneaCruda(eph_h th, eph_i ti);
 void ordenarPorIngreso(vector<hogar> &v, eph_i ti);
 
