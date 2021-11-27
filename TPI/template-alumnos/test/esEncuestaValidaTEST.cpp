@@ -312,3 +312,21 @@ TEST(esEncuestaValidaTEST, invalidaEstaLlenoUnHogar) {
 
     EXPECT_FALSE(esEncuestaValida(th, ti));
 }
+
+TEST(esEncuestaValidaTEST, correccion1) {
+
+    eph_h th = {{22114, 2020, 3, 319611, 629088, 3, 41, 0, 1, 3, 1, 0}};
+
+    eph_i ti = {{22114, 2020, 1, 0, 3, 1, 18, 0, 0, 20000, 10}};
+
+    EXPECT_FALSE(esEncuestaValida(th, ti));
+}
+
+TEST(esEncuestaValidaTEST, correccion2) {
+
+    eph_h th = {{22114, 2020, 3, 319611, 629088, 3, 41, 0, 1, 3, 1, 3}};
+
+    eph_i ti = {{22114, 2020, 1, 0, 3, 1, 18, 0, 0, 20000, 10}};
+
+    EXPECT_FALSE(esEncuestaValida(th, ti));
+}

@@ -151,7 +151,7 @@ bool hogarValido(hogar h) {
         (h[MAS_500] == 0 || h[MAS_500] == 1) &&
         (0 < h[IV1] && h[IV1] <= 5) &&
         0 < h[IV2] && h[II2] >= 1 &&
-        (h[II3] = 1 || h[II3] == 2));
+        (h[II3] == 1 || h[II3] == 2));
 }
 
 bool valorRegionValido(int r) {
@@ -207,7 +207,7 @@ int cantHogaresValidosConHC(eph_h th, eph_i ti, int region) {
 float proporcionDeCasasConHC(eph_h th, eph_i ti, int region) {
     float proporcion = 0;
     if (cantHogaresValidos(th, region) > 0)
-        proporcion = float(cantHogaresValidosConHC(th, ti, region) / cantHogaresValidos(th, region));
+        proporcion = float(cantHogaresValidosConHC(th, ti, region)) / float(cantHogaresValidos(th, region));
     return proporcion;
 }
 
